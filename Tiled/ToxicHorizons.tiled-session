@@ -1,0 +1,168 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "D:/Toxic-Horizons/maps/BaseMap.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Alle Dateien (*)",
+    "fileStates": {
+        "BasicTileset.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
+        "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/BasicTileset.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/Toxic-Horizons/Tiled/BasicTileset.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/Toxic-Horizons/maps/BaseMap.tmx": {
+            "scale": 0.6407552083333332,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 955.9032716927456,
+                "y": 730.3881324933958
+            }
+        },
+        "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/maps/BaseMap.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 540.909090909091,
+                "y": 615.1515151515151
+            }
+        },
+        "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/maps/testmap.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 947,
+                "y": 578
+            }
+        },
+        "C:/Users/johan/OneDrive/Dokumente/Toxic-Horizons/maps/BaseMap.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 962,
+                "y": 620.6666666666667
+            }
+        },
+        "D:/Toxic-Horizons/maps/BaseMap.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 1466,
+                "y": 702
+            }
+        },
+        "D:/Toxic-Horizons/maps/LobbyMap.tmx": {
+            "scale": 0.5591145833333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 960.4471355379601,
+                "y": 639.4038192827201
+            }
+        },
+        "D:/Toxic-Horizons/maps/TutorialMap.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 960.6060606060606,
+                "y": 640.909090909091
+            }
+        },
+        "EnemyPaths.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "F:/Meine Ablage/Toxic-Horizons/maps/BaseMap.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1109.5,
+                "y": 356.5
+            }
+        },
+        "F:/Meine Ablage/Toxic-Horizons/maps/LobbyMap.tmx": {
+            "expandedObjectLayers": [
+                10
+            ],
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 880.6666666666665,
+                "y": 547
+            }
+        },
+        "F:/Meine Ablage/private_vault/TOXIC HORIZONS/maps/BaseMap.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1154.5,
+                "y": 521.5
+            }
+        },
+        "G:/Meine Ablage/Toxic-Horizons/maps/BaseMap.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 674,
+                "y": 858.6666666666666
+            }
+        },
+        "G:/Meine Ablage/Toxic-Horizons/maps/LobbyMap.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1034,
+                "y": 445.33333333333337
+            }
+        },
+        "Objects.tsx": {
+            "scaleInDock": 0.125,
+            "scaleInEditor": 1
+        }
+    },
+    "last.externalTilesetPath": "F:/Meine Ablage/Toxic-Horizons/Tiled",
+    "last.imagePath": "F:/Meine Ablage/Toxic-Horizons/sprites/objects",
+    "last.worldFilePath": "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/maps",
+    "loadedWorlds": [
+        "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/maps/World.world"
+    ],
+    "map.fixedSize": true,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "openFiles": [
+        "BasicTileset.tsx",
+        "EnemyPaths.tsx",
+        "Objects.tsx",
+        "D:/Toxic-Horizons/maps/BaseMap.tmx",
+        "D:/Toxic-Horizons/maps/LobbyMap.tmx",
+        "D:/Toxic-Horizons/maps/TutorialMap.tmx"
+    ],
+    "project": "ToxicHorizons.tiled-project",
+    "recentFiles": [
+        "D:/Toxic-Horizons/maps/BaseMap.tmx",
+        "BasicTileset.tsx",
+        "EnemyPaths.tsx",
+        "Objects.tsx",
+        "D:/Toxic-Horizons/maps/TutorialMap.tmx",
+        "D:/Toxic-Horizons/maps/LobbyMap.tmx",
+        "F:/Meine Ablage/Toxic-Horizons/maps/BaseMap.tmx",
+        "F:/Meine Ablage/Toxic-Horizons/maps/LobbyMap.tmx",
+        "G:/Meine Ablage/Toxic-Horizons/maps/LobbyMap.tmx",
+        "G:/Meine Ablage/Toxic-Horizons/maps/BaseMap.tmx",
+        "C:/Users/johan/OneDrive/Dokumente/Toxic-Horizons/maps/BaseMap.tmx",
+        "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/Toxic-Horizons/maps/BaseMap.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}

@@ -1,0 +1,232 @@
+import arcade
+from arcade import gui
+import time
+
+
+
+
+
+class UIEngine():
+    def __init__(self, window, Daten):
+        self.window = window
+        self.all_flashing_cycles = [100, "UP"]
+        self.shop_manager = gui.UIManager()
+        self.shop_manager.enable()
+        self.Daten = Daten
+        
+
+
+        self.text_HP = arcade.Text("", 50, 100, arcade.color.WHITE, 30)
+        self.text_Schrott = arcade.Text("", 50, 50, arcade.color.WHITE, 30)
+        self.text_level = arcade.Text("", 50, 150, arcade.color.WHITE, 30)
+        self.text_ultpoints = arcade.Text("", 50, 200, arcade.color.WHITE, 30)
+        
+        self.debugtext_TIME = arcade.Text("", self.window.width - 30, self.window.height - 20,
+                                          arcade.color.WHITE, 15, anchor_x="right")
+        self.debugtext_fps = arcade.Text("", self.window.width - 30, self.window.height - 40,
+                                         arcade.color.WHITE, 15, anchor_x="right")
+        
+        self.dash_sprite = arcade.Sprite("sprites/dash.png")
+        self.dash_sprite.center_x = self.window.width // 2
+        self.dash_sprite.center_y = 30
+        self.dash_sprite.scale = 0.2
+        
+        # Pre-load shop asset to save memory
+        self.miro_sprite = arcade.Sprite("sprites/miro.png")
+        self.miro_sprite.scale = 5
+        self.miro_sprite.position = (self.window.width, self.window.height)
+
+        self.scrap_sprite = arcade.Sprite("sprites/scrap.png")
+        self.scrap_sprite.scale = 0.6
+
+        self.heart_sprite = arcade.Sprite("sprites/heart.png")
+        self.heart_sprite.scale = 1.8
+
+
+    def run_cycle(self):
+        if self.all_flashing_cycles[1] == "UP":
+            self.all_flashing_cycles[0] += 5
+            if self.all_flashing_cycles[0] >= 255:
+                self.all_flashing_cycles[1] = "DOWN"
+        elif self.all_flashing_cycles[1] == "DOWN":
+            self.all_flashing_cycles[0] -= 5
+            if self.all_flashing_cycles[0] <= 50:
+                self.all_flashing_cycles[1] = "UP"
+        
+    def get_cycle(self):
+        return self.all_flashing_cycles[0]
+    
+    def Game_draw_UI(self, movement_engine, dash_cooldown):
+        self.text_HP.draw()
+        self.text_Schrott.draw()
+
+
+        # FIX Step 1: Using the passed engine reference
+        current_time = time.monotonic()
+        can_dash = (current_time - movement_engine.last_dash_time) >= dash_cooldown
+        
+        if can_dash:
+            self.dash_sprite.alpha = 255
+        else:
+            self.dash_sprite.alpha = max(0, self.all_flashing_cycles[0] - 50)
+            
+        arcade.draw_sprite(self.dash_sprite)
+        arcade.draw_sprite(self.scrap_sprite, pixelated=True)
+
+        self.heart_sprite.scale = 1.8 + (self.all_flashing_cycles[0] - 50) * (0.4 / (255 - 50))
+        arcade.draw_sprite(self.heart_sprite, pixelated=True)
+    
+    def draw_debug(self):
+        self.debugtext_TIME.draw()
+        self.debugtext_fps.draw()
+
+    def Game_draw_enemy_health(self, Movementengine):
+        PathEnemyList, FollowEnemyList, RetourningList = Movementengine.get_all_enemy_lists()
+        for enemy in PathEnemyList:
+            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, (enemy.health/enemy.abs_health)*100, 5, arcade.color.GREEN)
+        for enemy in FollowEnemyList:
+            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, (enemy.health/enemy.abs_health)*100, 5, arcade.color.GREEN)
+        for enemy in RetourningList:
+            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, (enemy.health/enemy.abs_health)*100, 5, arcade.color.GREEN)
+
+    def Game_update_UI(self):
+        self.text_ultpoints.text = f"Ultpoints: {self.Daten.get_one_data('Ultpoints')}"
+        self.text_level.text = f"Level: {self.Daten.get_one_data('Levelnumber')}"
+        self.text_Schrott.text = f"Schrott: {int(self.Daten.get_one_data('Schrott'))}"
+        self.text_HP.text = f"HP: {self.Daten.get_one_data('Health')}"
+        self.debugtext_TIME.text = f"{time.monotonic():.2f}"
+        self.debugtext_fps.text = f"FPS: {round(arcade.get_fps(60),1)}"
+        self.scrap_sprite.center_x = self.text_Schrott.position[0] - 15
+        self.scrap_sprite.center_y = self.text_Schrott.position[1] + 10
+        self.heart_sprite.center_x = self.text_HP.position[0] - 15
+        self.heart_sprite.center_y = self.text_HP.position[1] + 10
+
+    def shop(self):
+        self.shop_init()
+        # Panels zeichnen
+        arcade.draw_lbwh_rectangle_filled(self.left_x, self.left_y, self.left_w, self.left_h, arcade.color.WHITE_SMOKE)
+        arcade.draw_lbwh_rectangle_filled(self.right_x, self.right_y, self.right_w, self.right_h, arcade.color.WHITE_SMOKE)
+        # Buttons zeichnen
+        self.shop_manager.draw()
+        self.shop_weapon_text_name.draw()
+        self.shop_weapon_text_info.draw()
+        self.shop_weapon_text_speed.draw()
+        self.shop_weapon_text_damage.draw()
+        self.shop_weapon_text_cost.draw()
+        arcade.draw_sprite(self.scrap_sprite, pixelated=True)
+        arcade.draw_sprite(self.weapon_sprite)
+
+    def shop_init(self):
+        # Shop Buttons
+        self.left_button = gui.UIFlatButton(text="Waffe verbessern", width=200, height=60)
+        self.right_button = gui.UIFlatButton(text="Ult verbessern", width=200, height=60)
+
+        
+        
+
+        # Klick-Events
+        @self.left_button.event("on_click")
+        def on_left_click(event):
+            if self.Daten.get_one_data("Schrott") > NextWeaponInfos["cost"]:
+                self.Daten.upgrade_weapon()
+            else:
+                pass
+
+        @self.right_button.event("on_click")
+        def on_right_click(event):
+            pass
+
+        # Buttons zum Manager hinzufügen
+        self.shop_manager.add(self.left_button)
+        self.shop_manager.add(self.right_button)
+        
+        shop_left = 100
+        shop_bottom = 100
+        shop_width = self.window.width - 200
+        shop_height = self.window.height - 200
+        self.complete_height = shop_bottom + shop_height
+
+          # Panels berechnen
+        self.left_x = shop_left + 50
+        self.left_y = shop_bottom + 50
+        self.left_w = shop_width // 2 - 100
+        self.left_h = shop_height - 100
+        
+
+        self.right_x = shop_left + shop_width - self.left_w - 50
+        self.right_y = shop_bottom + 50
+        self.right_w = self.left_w
+        self.right_h = self.left_h
+
+        self.panelwidth = self.right_w
+        
+
+        self.left_button.center_x = self.left_x + self.left_w // 2
+        self.left_button.center_y = self.left_y + 40
+
+
+        self.right_button.center_x = self.right_x + self.right_w // 2
+        self.right_button.center_y = self.right_y + 40
+
+        self.left_panel_middle = self.left_button.center_x #(self.left_x + self.left_w)
+
+        # BACKGROUND
+        arcade.draw_lbwh_rectangle_filled(
+        shop_left,
+        shop_bottom,
+        shop_width,
+        shop_height,
+        arcade.color.WHITE)
+
+        CurrentWeapon = self.Daten.get_one_data("CurrentWeapon")
+        CurrentLevel = int(CurrentWeapon[-1])
+        if CurrentLevel < 3:
+            NextWeapon = f"{CurrentWeapon[0]}.{CurrentLevel + 1}"
+        else:
+            NextWeapon = f"{int(CurrentWeapon[0]) + 1}.1"
+
+        NextWeaponInfos = self.Daten.get_all_weapon_data(NextWeapon)
+        CurrentWeaponInfos = self.Daten.get_all_weapon_data(CurrentWeapon)
+
+
+        
+        self.weapon_sprite = arcade.Sprite(f"sprites/weapons/{self.Daten.get_one_weapon_data(NextWeapon, "sprite")}")
+        self.weapon_sprite.scale = 0.5
+        self.weapon_sprite.center_x = self.left_panel_middle
+        self.weapon_sprite.center_y = self.complete_height // 2 + 100
+
+        
+        # NAME
+        self.shop_weapon_text_name = arcade.Text(
+            NextWeaponInfos["name"],
+            x=self.left_panel_middle,
+            y=self.complete_height-100,
+            color=arcade.color.BLACK, font_size=30, width=450, multiline=True, anchor_x="center", anchor_y="center", align="center")
+
+        # INFO
+        self.shop_weapon_text_info = arcade.Text(
+            NextWeaponInfos["info"],
+            x=self.left_panel_middle,
+            y=self.complete_height-150,
+            color=arcade.color.BLACK, font_size=20, width=450, multiline=True, anchor_x="center", anchor_y="center", align="center")
+
+        self.shop_weapon_text_speed = arcade.Text(
+            f"Schussgeschwindigkeit: {round(1/CurrentWeaponInfos["speed"],1)} -> {round(1/NextWeaponInfos["speed"],1)}",
+            x=self.left_panel_middle,
+            y=self.left_button.center_y + 100,
+            color=arcade.color.BLACK, font_size=20, width=450, multiline=True, anchor_x="center", anchor_y="center", align="center")
+
+        self.shop_weapon_text_damage = arcade.Text(
+            f"Schaden: {CurrentWeaponInfos["damage"]} -> {NextWeaponInfos["damage"]}",
+            x=self.left_panel_middle,
+            y=self.left_button.center_y + 125,
+            color=arcade.color.BLACK, font_size=20, width=450, multiline=True, anchor_x="center", anchor_y="center", align="center")
+        
+        self.shop_weapon_text_cost = arcade.Text(
+            f"{NextWeaponInfos["cost"]}",
+            x=self.left_panel_middle - 20,
+            y=self.left_button.center_y + 50,
+            color=arcade.color.BLACK, font_size=20, width=450, multiline=True, anchor_x="center", anchor_y="center", align="center")
+        
+        self.scrap_sprite.center_x = self.left_panel_middle + 20
+        self.scrap_sprite.center_y = self.left_button.center_y + 50

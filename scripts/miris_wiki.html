@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>TOXIC HORIZON – MIRI'S WIKI</title>
+
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #eee;
+            font-family: system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #262626;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 3px solid #ff8c42;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6);
+        }
+
+        #search {
+            width: 60%;
+            padding: 12px 16px;
+            font-size: 18px;
+            border-radius: 6px;
+            border: 2px solid #ff8c42;
+            background: #111;
+            color: #eee;
+            outline: none;
+        }
+
+        #search:focus {
+            box-shadow: 0 0 10px #ff8c42;
+        }
+
+        h1 {
+            color: #ff8c42;
+            margin-bottom: 10px;
+            text-shadow: 0 0 8px rgba(255,140,66,0.6);
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            background: #222;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #ff8c42;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #ffb37a;
+        }
+
+        .section p {
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .weapon {
+            background: #2a2a2a;
+            padding: 15px;
+            margin-top: 10px;
+            border-left: 4px solid #ff8c42;
+        }
+
+        .weapon h3 {
+            margin: 0 0 5px 0;
+            color: #ff8c42;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>⚠ MIRI'S WIKI – TOXIC HORIZON ⚠</h1>
+    <input type="text" id="search" placeholder="Nach Schlagwort suchen …">
+</header>
+
+<div class="content">
+
+    <!-- STEUERUNG -->
+    <div class="section">
+        <h2>Steuerung</h2>
+        <p>Die Zone verzeiht keine Fehler. Hier ist, wie du deine Knochen zusammenhältst:</p>
+        <ul>
+            <li><b>W / A / S / D</b> – Bewegung</li>
+            <li><b>Linksklick</b> – Schießen</li>
+            <li><b>Leertaste</b> – Dash (Ausweichen)</li>
+            <li><b>E</b> – Interagieren</li>
+            <li><b>ESC</b> – Menü / Shop verlassen</li>
+            <li><b>F3</b> – Debug‑Overlay</li>
+        </ul>
+    </div>
+
+    <!-- KAMPF -->
+    <div class="section">
+        <h2>Kampf</h2>
+        <p>Die Mutanten hier draußen sind nicht freundlich <i>(oder einfach sehr hungrig)</i>. Du schießt mit Linksklick in die Richtung des Mauszeigers.</p>
+        <p>Jeder Treffer bringt dir <b>Schrott</b> – und Schrott ist Macht. <b>MUAHAHAHAH</b></p>
+    </div>
+
+    <!-- DASH -->
+    <div class="section">
+        <h2>Dash</h2>
+        <p>Mit der <b>Leertaste</b> machst du einen schnellen Ausweichschritt.</p>
+        <p>Die Dash‑Anzeige unten zeigt dir, wann du wieder bereit bist.</p>
+        <p>Pro Tipp: Pass auf, dass du nicht stolperst.</p>
+    </div>
+
+    <!-- INTERAKTION -->
+    <div class="section">
+        <h2>Interaktion</h2>
+        <p>Wenn ein blinkendes E Symbol erscheint, kannst du mit <b>E</b> interagieren.<i>... Macht Sinn oder?</i></p>
+        <p>Dazu gehören:</p>
+        <ul>
+            <li>der Shop</li>
+            <li>Start der nächsten Runde</li>
+            <li>Rückkehr ins Camp</li>
+        </ul>
+    </div>
+
+    <!-- SCHROTT -->
+    <div class="section">
+        <h2>Schrott</h2>
+        <p>Schrott ist die Währung der Zone. Du bekommst ihn durch:</p>
+        <ul>
+            <li>Gegner töten</li>
+            <li>Andere Gegner töten</li>
+            <li>...was willste noch wissen?</li>
+            <li>Wenn du stirbst kannst du fortfahren, insofern du 1/3 deines Vermögens einbüßen willst!</li>
+        </ul>
+        <p>Du brauchst Schrott für Waffenupgrades und neue Waffen.</p>
+    </div>
+
+    <!-- WAFFEN -->
+    <div class="section">
+        <h2>Waffen & Upgrades</h2>
+        <p>Jede Waffe hat drei Upgrade‑Stufen. Danach schaltest du die nächste Waffenklasse frei.</p>
+
+        <div class="weapon">
+            <h3>Kel‑Tec P‑11 (Klasse 1)</h3>
+            <p>Leichte Einsteigerpistole. Schnell, aber schwach.</p>
+            <ul>
+                <li>Stufe 1: 10 Schaden, 1.20 Speed</li>
+                <li>Stufe 2: 12 Schaden, 1.15 Speed</li>
+                <li>Stufe 3: 14 Schaden, 1.10 Speed</li>
+            </ul>
+        </div>
+
+        <div class="weapon">
+            <h3>Glock 19 (Klasse 2)</h3>
+            <p>Solide Dienstpistole. Gute Balance.</p>
+            <ul>
+                <li>Stufe 1: 16 Schaden, 1.00 Speed</li>
+                <li>Stufe 2: 20 Schaden, 0.95 Speed</li>
+                <li>Stufe 3: 25 Schaden, 0.90 Speed</li>
+            </ul>
+        </div>
+
+        <div class="weapon">
+            <h3>Desert Eagle (Klasse 3)</h3>
+            <p>Wenn du etwas wirklich hassen willst – nimm das hier.</p>
+            <ul>
+                <li>Stufe 1: 30 Schaden, 0.85 Speed</li>
+                <li>Stufe 2: 35 Schaden, 0.80 Speed</li>
+                <li>Stufe 3: 40 Schaden, 0.75 Speed</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- RUNDEN -->
+    <div class="section">
+        <h2>Runden & Gegnerentwicklung</h2>
+        <p>Mit jeder Runde werden die Gegner stärker. Sie lernen schnell ... schneller als uns lieb ist.</p>
+        <p>Plane deine Upgrades, sonst wirst du schneller gefressen, als du „Rinderkennzeichnungsfleischetikettierungsüberwachungsaufgabenübertragungsgesetz“ sagen kannst.</p>
+    </div>
+
+    <!-- UI -->
+    <div class="section">
+        <h2>Benutzeroberfläche (UI)</h2>
+        <p>Die UI zeigt dir alles, was du wissen musst:</p>
+        <ul>
+            <li>Lebenspunkte</li>
+            <li>Schrott</li>
+            <li>Aktuelle Waffe</li>
+            <li>Dash‑Cooldown</li>
+            <li>Gegner‑Lebensbalken</li>
+            <li>Cycle‑Animationen (Blinken, Effekte)</li>
+        </ul>
+    </div>
+
+    <!-- SPEICHERN -->
+    <div class="section">
+        <h2>Speichern & Laden</h2>
+        <p>Das Spiel speichert automatisch alle 20 Sek. im Hintergrund.</p>
+        <p>Du kannst auch manuell speichern oder laden, aber pass auf, dass du nicht versehentlich einen alten Spielstand überschreibst.</p>
+    </div>
+
+    <!-- TUTORIAL -->
+    <div class="section">
+        <h2>Das Tutorial</h2>
+        <p>Ich führe dich durch die Grundlagen. Schau gern mal vorbei!</p>
+    </div>
+
+    <div class="section">
+    <h2>Entwicklung — garantiert KI‑frei™</h2>
+    <p>
+        Dieses Spiel wurde — laut interner Protokolle — vollständig ohne KI entwickelt.  
+        Kein neuronales Netz — kein Transformer‑Modell — kein synthetischer Wahnsinn.  
+        Nur echte Finger — echte Tastatur — echte Müdigkeit um 3:47 Uhr.
+    </p>
+    <p>
+        Es gibt keine semantische Vektorraumoptimierung — keine probabilistische Entscheidungslogik — keine emergente Intelligenz.  
+        Wenn du stirbst, war das keine algorithmische Vorhersage — das war einfach Pech.
+    </p>
+    <p>
+        Anders gesagt:  
+        <em>„Ich bin keine KI — aber ich wurde so programmiert, dass ich wie ein Mensch programmiere.“</em>  
+        — hat niemand gesagt, außer vielleicht ein besonders selbstverliebter Kommentar im Code.
+    </p>
+    <p>
+        Toxic Horizon ist handgemacht — mit Liebe, Wut, Kaffee und einer Prise Wahnsinn.  
+        Und wenn du denkst, das Spiel sei unfair — dann liegt das nicht an maschinellem Lernen.  
+        Sondern an menschlichem Trotz.
+    </p>
+</div>
+
+
+</div>
+
+<script>
+    const search = document.getElementById("search");
+    const sections = document.querySelectorAll(".section");
+
+    search.addEventListener("input", () => {
+        const term = search.value.toLowerCase();
+
+        sections.forEach(sec => {
+            const text = sec.innerText.toLowerCase();
+            sec.classList.toggle("hidden", !text.includes(term));
+        });
+    });
+</script>
+
+</body>
+</html>
