@@ -13,11 +13,15 @@ class MovementEngine():
         self.abandon_path_list = arcade.SpriteList()
         self.retourning_list = arcade.SpriteList()
         self.player_is_dead = False
+        self.sound_shot = arcade.Sound("sounds/singleshot.mp3")
+        self.sound_walk = arcade.Sound("sounds/walk.mp3")
+        self.walk_handle = None
 
     def player_movement(self, player, keys_down, dash_x, dash_y, dash_decay, delta_time):
         self.player = player
         speed = 300 * delta_time 
         walls = self.scene["Walls"]
+        
 
         self.camera.position = self.player.position
 
@@ -44,6 +48,18 @@ class MovementEngine():
         if arcade.check_for_collision_with_list(self.player, walls):
             self.player.center_y -= final_y
 
+        # Prüfen, ob eine Bewegungstaste gedrückt wird
+        is_moving = move_x != 0 or move_y != 0
+
+        if is_moving:
+            # Wenn der Sound noch nicht spielt, starte ihn
+            if self.walk_handle is None:
+                self.walk_handle = arcade.play_sound(self.sound_walk, loop=True, speed=16)
+        else:
+            # Wenn der Spieler steht, aber der Sound noch läuft: Stoppen!
+            if self.walk_handle is not None:
+                arcade.stop_sound(self.walk_handle)
+                self.walk_handle = None
         # Dash Movement
         self.player.center_x += dash_x
         self.player.center_y += dash_y
@@ -250,8 +266,6 @@ class MovementEngine():
 
         # 4) RETOURNING: zurück zur gespeicherten return_target_x/y und dann wieder einreihen
         for enemy in list(self.retourning_list):
-            self.update_enemy_rotation(enemy)
-            self.update_enemy_animation(enemy, self.window.delta_time)
             tx = getattr(enemy, "return_target_x", enemy.center_x)
             ty = getattr(enemy, "return_target_y", enemy.center_y)
 
@@ -260,31 +274,32 @@ class MovementEngine():
             d = math.hypot(dx, dy)
 
             if d > 5:
-                enemy.center_x += (dx / d) * self.path_enemy_speed
-                enemy.center_y += (dy / d) * self.path_enemy_speed
+                # BERECHNUNG DER RICHTUNG (für die Rotation wichtig!)
+                enemy.change_x = (dx / d) 
+                enemy.change_y = (dy / d)
+                
+                enemy.center_x += enemy.change_x * self.path_enemy_speed
+                enemy.center_y += enemy.change_y * self.path_enemy_speed
             else:
                 # Snap auf Tilezentrum
                 enemy.center_x, enemy.center_y = tx, ty
 
-                # Wenn wir die Tile haben: setze change_x/change_y nach tile.direction
+                # Wenn wir die Tile erreicht haben: Setze Richtung des Pfades
                 if hasattr(enemy, "return_tile") and enemy.return_tile is not None:
                     dir_prop = enemy.return_tile.properties.get("direction", None)
-                    if dir_prop == "left": enemy.change_x, enemy.change_y = -1, 0
-                    elif dir_prop == "right": enemy.change_x, enemy.change_y = 1, 0
-                    elif dir_prop == "up": enemy.change_x, enemy.change_y = 0, 1
-                    elif dir_prop == "down": enemy.change_x, enemy.change_y = 0, -1
-                    else:
-                        enemy.change_x, enemy.change_y = 0, 0
-                else:
-                    enemy.change_x, enemy.change_y = getattr(enemy, "change_x", 0), getattr(enemy, "change_y", 0)
-
+                    # Hier nutzen wir deine Hilfsfunktion
+                    vx, vy = self._direction_to_vector(dir_prop)
+                    enemy.change_x, enemy.change_y = vx, vy
+                
                 # Zurück in Patrouillenliste
-                try:
+                if enemy in self.retourning_list:
                     self.retourning_list.remove(enemy)
-                except ValueError:
-                    pass
                 if enemy not in self.path_Enemy_sprite_list:
                     self.path_Enemy_sprite_list.append(enemy)
+
+            # WICHTIG: Update Rotation und Animation NACHDEM change_x/y gesetzt wurden
+            self.update_enemy_rotation(enemy)
+            self.update_enemy_animation(enemy, self.window.delta_time)
             
 
         # 5) Kugeln & Schrott (wie zuvor)
@@ -368,12 +383,10 @@ class MovementEngine():
         enemy.kill()
 
     def player_shoot(self, x, y):
-        if not hasattr(self, 'player') or self.player is None:
-            return
-
         current_time = time.monotonic()
         self.currentWeapon = self.Daten.get_one_data("CurrentWeapon")
         if (current_time - self.last_shoot_time) >= self.Daten.get_one_weapon_data(self.currentWeapon, "speed"):
+            arcade.play_sound(self.sound_shot, 0.25, loop=False)
             bullet = arcade.Sprite("sprites/bullet.png")
             bullet.scale = 1.5
             bullet.position = self.player.position

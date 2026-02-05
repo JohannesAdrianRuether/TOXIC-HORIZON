@@ -200,7 +200,7 @@ class UIEngine():
         # Shop Buttons
         self.left_button = gui.UIFlatButton(text="Waffe verbessern", width=200, height=60)
         self.right_button = gui.UIFlatButton(text="Ult verbessern", width=200, height=60)
-
+        self.sound_weapon_upgrade = arcade.Sound("sounds/levelup.wav")
         
         
 
@@ -209,8 +209,8 @@ class UIEngine():
         def on_left_click(event):
             if self.Daten.get_one_data("Schrott") > NextWeaponInfos["cost"]:
                 self.Daten.upgrade_weapon()
-            else:
-                pass
+                arcade.play_sound(self.sound_weapon_upgrade,2,loop=False)
+
 
         @self.right_button.event("on_click")
         def on_right_click(event):

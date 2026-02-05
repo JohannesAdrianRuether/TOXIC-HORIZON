@@ -121,6 +121,8 @@ class GameView(arcade.View):
         map_pfad = "maps/Map1.tmx"
         self.window.set_mouse_visible(False)
         self.crosshair = arcade.Sprite("sprites/crosshair.png")
+        self.sound_music = arcade.Sound("sounds/gamemusic.mp3")
+        arcade.play_sound(self.sound_music, loop=True, volume=0.25)
 
         self.tilemap = arcade.load_tilemap(map_pfad, scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
 
@@ -129,7 +131,6 @@ class GameView(arcade.View):
         self.Player_sprite = arcade.Sprite()
         self.Player_sprite.scale = 2
 
-        # Walk only
         self.player_walk_right = [
             arcade.load_texture("sprites/player/walk_right_1.png"),
             arcade.load_texture("sprites/player/walk_right_1.png"),
@@ -332,7 +333,7 @@ class LobbyView(arcade.View):
         self.LobbyUIEngine = UIEngine(self.window, Daten)
         self.keys_down = set()
         self.dash_x, self.dash_y = 0, 0
-        self.dash_decay, self.dash_cooldown = 1.2, 1.5
+        self.dash_decay, self.dash_cooldown = 1.2, 1.2
         self.shop_is_entered = False
         self.interactiontiles = self.scene["interactions"]
         self.text_username = arcade.Text(Daten.get_one_data("Username"), 0, 0, arcade.color.WHITE, 15, anchor_x="center")
