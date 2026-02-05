@@ -119,6 +119,8 @@ class GameView(arcade.View):
         super().__init__()
         Daten.autosave()
         map_pfad = "maps/Map1.tmx"
+        self.window.set_mouse_visible(False)
+        self.crosshair = arcade.Sprite("sprites/crosshair.png")
 
         self.tilemap = arcade.load_tilemap(map_pfad, scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
 
@@ -147,28 +149,6 @@ class GameView(arcade.View):
         # Starttexture
         self.Player_sprite.texture = self.player_walk_right[0]
 
-
-
-        # --- Minimap Setup ---
-        self.minimap_width = 256
-        self.minimap_height = 256
-
-        # Leere Texture erzeugen
-        self.minimap_texture = arcade.Texture.create_empty(
-            "minimap",
-            (self.minimap_width, self.minimap_height)
-        )
-
-        # Sprite, das die Minimap anzeigt
-        self.minimap_sprite = arcade.Sprite(
-            self.minimap_texture,
-            center_x=self.window.width - self.minimap_width // 2 - 20,
-            center_y=self.window.height - self.minimap_height // 2 - 20
-        )
-
-        self.minimap_sprite_list = arcade.SpriteList()
-        self.minimap_sprite_list.append(self.minimap_sprite)
-
    
         for spawn in self.scene["spawns"]:
             if spawn.properties.get("spawn") == "player":
@@ -187,34 +167,8 @@ class GameView(arcade.View):
 
         self.interactiontiles = self.scene["interactions"]
         self.button_e_sprite = arcade.Sprite("sprites/EButton.png")
-
         Daten.set_data("Health", 100)
-
-    def update_minimap(self):
-        map_width  = self.tilemap.width * self.tilemap.tile_width * self.tilemap.scaling
-        map_height = self.tilemap.height * self.tilemap.tile_height * self.tilemap.scaling
-
-        self.enemy_dot = arcade.make_circle_texture(12, arcade.color.RED)
-
-        proj = (0, map_width, 0, map_height)
-
-        atlas = self.minimap_sprite_list.atlas
-
-        with atlas.render_into(self.minimap_texture, projection=proj) as fbo:
-            fbo.clear(color=arcade.color.BLACK)
-
-            self.scene.draw()
-
-            arcade.draw_sprite(self.Player_sprite)
-            for enemy in self.GameMovementEngine.path_Enemy_sprite_list:
-                arcade.draw_circle_filled(enemy.center_x, enemy.center_y, 25, arcade.color.RED)
-            
-            arcade.draw_sprite(self.Player_sprite)
-            for enemy in self.GameMovementEngine.following_Enemy_sprite_list:
-                arcade.draw_circle_filled(enemy.center_x, enemy.center_y, 25, arcade.color.BLUE)
-            
-            for interaction in self.interactiontiles:
-                arcade.draw_circle_filled(interaction.center_x, interaction.center_y, 35, arcade.color.GREEN)    
+        self.GameUIEngine.minimap_setup()
 
 
 
@@ -222,8 +176,6 @@ class GameView(arcade.View):
         self.clear()
         self.camera.use()
         self.scene.draw()
-
-
 
         self.GameUIEngine.Game_draw_enemy_health(self.GameMovementEngine)
 
@@ -241,11 +193,11 @@ class GameView(arcade.View):
         self.GameMovementEngine.draw_enemys()
         arcade.draw_sprite(self.Player_sprite, pixelated=True)
         self.gui_camera.use()
-        self.update_minimap()
-        self.minimap_sprite_list.draw()
+
+        arcade.draw_sprite(self.crosshair, pixelated=True)
 
         self.GameUIEngine.Game_draw_UI(self.GameMovementEngine, self.dash_cooldown)
-
+ 
         if arcade.key.F3 in self.keys_down:
             self.GameUIEngine.draw_debug()
         
@@ -255,8 +207,6 @@ class GameView(arcade.View):
         if self.playerisdead:
             Daten.autosave()    
             arcade.schedule(lambda dt: self.window.show_view(GameOver()), 0)
-
-   
         
 
     def on_update(self, delta_time):
@@ -264,6 +214,7 @@ class GameView(arcade.View):
         self.GameUIEngine.Game_update_UI()
         self.GameMovementEngine.run_enemy_movement(self.Player_sprite)
         self.playerisdead = self.GameMovementEngine.all_collision_checks(self.Player_sprite)
+        self.GameUIEngine.update_minimap(self.tilemap, self.scene, self.Player_sprite, self.GameMovementEngine.path_Enemy_sprite_list, self.GameMovementEngine.following_Enemy_sprite_list, self.interactiontiles)
         
 
         self.dash_x, self.dash_y = self.GameMovementEngine.player_movement(
@@ -274,6 +225,7 @@ class GameView(arcade.View):
         self.text_username.x = self.Player_sprite.center_x
         self.text_username.y = self.Player_sprite.center_y + 55
         self.update_player_animation(delta_time)
+        
 
 
     def update_player_animation(self, delta_time):
@@ -335,6 +287,9 @@ class GameView(arcade.View):
         if button == arcade.MOUSE_BUTTON_LEFT:
             p = self.camera.unproject((x, y))
             self.GameMovementEngine.player_shoot(p.x, p.y)
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.crosshair.position = (x,y)
 
 class LobbyView(arcade.View):
     def __init__(self):
@@ -416,7 +371,7 @@ class LobbyView(arcade.View):
         self.LobbyUIEngine.Game_update_UI()
         self.text_username.x, self.text_username.y = self.Player_sprite.center_x, self.Player_sprite.center_y + 55
         self.update_player_animation(delta_time)
-
+        
     def update_player_animation(self, delta_time):
         # Bewegung prüfen
         moving = (

@@ -103,8 +103,10 @@ class MovementEngine():
             enemy.texture = enemy.textures[0]
             enemy.animation_timer = 0.0
 
-            enemy.health = 15 + self.Daten.get_one_data("Levelnumber") * 2 + self.Daten.get_one_data("Levelnumber")**1.2
+            enemy.health = 20 + self.Daten.get_one_data("Levelnumber") * 2 + self.Daten.get_one_data("Levelnumber")**1.2
             enemy.abs_health = enemy.health
+
+            enemy.origin_is_follow = True
 
             enemy.change_x = 0
             enemy.change_y = 0
@@ -128,7 +130,7 @@ class MovementEngine():
             enemy.texture = enemy.textures[0]
             enemy.animation_timer = 0.0
 
-            enemy.health = 10 + self.Daten.get_one_data("Levelnumber") * 2 + self.Daten.get_one_data("Levelnumber") ** 1.2
+            enemy.health = 25 + self.Daten.get_one_data("Levelnumber") * 2 + self.Daten.get_one_data("Levelnumber") ** 1.2
             enemy.abs_health = enemy.health
 
             enemy.change_x = 0
@@ -169,28 +171,34 @@ class MovementEngine():
     def run_enemy_movement(self, player):
         walls = self.scene["Walls"]
         paths = self.scene["enemypath"]
-
+        aggro = 1
         # 1) Followers (unchanged simple chase)
         for enemy in self.following_Enemy_sprite_list:
+            if (enemy.health/enemy.abs_health)*100 < 25:
+                aggro = 1.5
             dx, dy = player.center_x - enemy.center_x, player.center_y - enemy.center_y
             d = math.hypot(dx, dy)
             if d > 5:
-                enemy.change_x = (dx / d) * self.follow_enemy_speed
-                enemy.change_y = (dy / d) * self.follow_enemy_speed
+                enemy.change_x = (dx / d) * self.follow_enemy_speed * aggro
+                enemy.change_y = (dy / d) * self.follow_enemy_speed * aggro
 
                 enemy.center_x += enemy.change_x
-                if arcade.check_for_collision_with_list(enemy, walls):
-                    enemy.center_x -= enemy.change_x
+                if not hasattr(enemy, "origin_is_follow"):
+                    if arcade.check_for_collision_with_list(enemy, walls):
+                        enemy.center_x -= enemy.change_x
 
                 enemy.center_y += enemy.change_y
-                if arcade.check_for_collision_with_list(enemy, walls):
-                    enemy.center_y -= enemy.change_y
+                if not hasattr(enemy, "origin_is_follow"):
+                    if arcade.check_for_collision_with_list(enemy, walls):
+                        enemy.center_y -= enemy.change_y
 
             self.update_enemy_rotation(enemy)
             self.update_enemy_animation(enemy, self.window.delta_time)
 
         # 2) PATH ENEMIES (patrouille) - wie vorher (keine Änderung nötig)
         for enemy in list(self.path_Enemy_sprite_list):
+            if (enemy.health/enemy.abs_health)*100 < 25:
+                aggro = 1.5
             hit_list = arcade.check_for_collision_with_list(enemy, paths)
             path_x, path_y = enemy.change_x, enemy.change_y
             for tile in hit_list:
@@ -200,8 +208,8 @@ class MovementEngine():
                     elif direction == "right": path_x, path_y = 1, 0
                     elif direction == "up": path_x, path_y = 0, 1
                     elif direction == "down": path_x, path_y = 0, -1
-            enemy.center_x += path_x * self.path_enemy_speed
-            enemy.center_y += path_y * self.path_enemy_speed
+            enemy.center_x += path_x * self.path_enemy_speed  * aggro
+            enemy.center_y += path_y * self.path_enemy_speed * aggro
             enemy.change_x, enemy.change_y = path_x, path_y
 
             # Aggro -> Wechsel in following (wie gehabt)
@@ -281,7 +289,7 @@ class MovementEngine():
 
         # 5) Kugeln & Schrott (wie zuvor)
         for bullet in self.bullet_sprite_list:
-            bullet_speed = 15
+            bullet_speed = 25
             if hasattr(self, "currentWeapon"):
                 bullet_speed = 15 + self.Daten.get_one_weapon_data(self.currentWeapon, "speed") * 1.25
             if hasattr(bullet, "d") and bullet.d != 0:

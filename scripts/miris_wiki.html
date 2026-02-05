@@ -13,6 +13,21 @@
             padding: 0;
         }
 
+        /* --- PIXEL ART RENDERING --- */
+        img {
+            image-rendering: pixelated;       /* Für Chrome/Edge */
+            image-rendering: crisp-edges;     /* Für Firefox */
+            border: 2px solid #333;           /* Optionaler Rahmen für Sprites */
+            background: #111;                 /* Dunkler Hintergrund für transparente Sprites */
+        }
+
+        html {
+            cursor: url('../sprites/cursor.png'), auto;
+        }
+        button, a, #search {
+            cursor: url('../sprites/cursor.png'), pointer;
+        }
+
         header {
             background: #262626;
             padding: 20px;
@@ -96,7 +111,6 @@
 
 <div class="content">
 
-    <!-- STEUERUNG -->
     <div class="section">
         <h2>Steuerung</h2>
         <p>Die Zone verzeiht keine Fehler. Hier ist, wie du deine Knochen zusammenhältst:</p>
@@ -110,14 +124,29 @@
         </ul>
     </div>
 
-    <!-- KAMPF -->
     <div class="section">
         <h2>Kampf</h2>
         <p>Die Mutanten hier draußen sind nicht freundlich <i>(oder einfach sehr hungrig)</i>. Du schießt mit Linksklick in die Richtung des Mauszeigers.</p>
-        <p>Jeder Treffer bringt dir <b>Schrott</b> – und Schrott ist Macht. <b>MUAHAHAHAH</b></p>
+        <p>Jeder Treffer bringt dir <b>Schrott</b> – und Schrott ist Macht. <b>...MUAHAHAHAH</b></p>
     </div>
 
-    <!-- DASH -->
+    <div class="section">
+        <h2>Gegner</h2>
+        <p>Hier draußen gibt es <b>zwei Arten</b> von Gegnern. Die S.P.I.N.N.E.N. und die Dronen. Beide haben <b>verschiedene Eigenschaften.</b></p>
+        <p>Für beide gilt: <b>Fallen ihre HP unter 25% legen sie nochmal richtig an Geschwindigkeit zu!</b></p>
+        <h3>Die S.P.I.N.N.E.N.</h3>
+        <p>Achtbeinig, elektronisch und definitiv schlechte Laune.</p>
+        <img src="../sprites/spider/walkinggif.gif" height="200" width="200">
+        <p>Die S.P.I.N.N.E.N. breiteten sich während der Apocalypse am meisten aus. Aber auch wenn es von ihnen <b>viele gibt</b>, kann man ihnen <b>leicht aus dem weg gehen.</b> Sie <b>laufen</b> einfach nur ihre eigenen <b>Routen</b> durch ihre <b>Terretorien ab.</b> <i>Aber pass auf!</i> Komsmst du ihnen <b>zu nahe</b>, beginnen sie dich so lange zu <b>verfolgen</b>, bis ihnen ihr <b>Terretorium</b> zu weit <b>entfernt</b> ist und sie <b>umkehren.</b></p>
+        
+
+        <h3>Die Dronen</h3>
+        <p>Fliegende Ärgernisse. Verfolgen dich auf Schritt und Tritt, aber haben weniger HP.</p>
+        <img src="../sprites/enemy2/flyinggif.gif" height="200" width="200">
+        <p>Die Dronen sind aufgrund ihrer mangelnden Navigationskünste nicht so ausgebreitet, wie die S.P.I.N.N.E.N. Sie <b>verfolgen dich egal wohin du gehst</b>. Halte den Blick, also auch immer in den Himmel gerichtet! <b>Wände sind für die Dronen mehr eine Empfehlung als Fakt.</b></p>
+        
+    </div>
+
     <div class="section">
         <h2>Dash</h2>
         <p>Mit der <b>Leertaste</b> machst du einen schnellen Ausweichschritt.</p>
@@ -125,7 +154,6 @@
         <p>Pro Tipp: Pass auf, dass du nicht stolperst.</p>
     </div>
 
-    <!-- INTERAKTION -->
     <div class="section">
         <h2>Interaktion</h2>
         <p>Wenn ein blinkendes E Symbol erscheint, kannst du mit <b>E</b> interagieren.<i>... Macht Sinn oder?</i></p>
@@ -137,20 +165,30 @@
         </ul>
     </div>
 
-    <!-- SCHROTT -->
+    <div class="section">
+        <h2>Mini-Map</h2>
+        <p>Die Mini-Map findest du oben links in deinem Bildschirm. Falls du dich verlaufen solltest, kann sie durchaus hilfreich sein!</p>
+        <p>Eine Legende:</p>
+        <ul>
+            <li>Du: Lila</li>
+            <li>S.P.I.N.N.E.N.: Rot</li>
+            <li>Dronen: Blau</li>
+            <li>Fluchtpunkt*: Grün</li>
+            <li><i>(*bzw. genehmigte Zwangsevakuierungs-Endstelle)</i></li>
+        </ul>
+    </div>
+
     <div class="section">
         <h2>Schrott</h2>
         <p>Schrott ist die Währung der Zone. Du bekommst ihn durch:</p>
         <ul>
             <li>Gegner töten</li>
             <li>Andere Gegner töten</li>
-            <li>...was willste noch wissen?</li>
-            <li>Wenn du stirbst kannst du fortfahren, insofern du 1/3 deines Vermögens einbüßen willst!</li>
+            <li>Wenn du stirbst, verlierst du 1/3 deines Vermögens!</li>
         </ul>
         <p>Du brauchst Schrott für Waffenupgrades und neue Waffen.</p>
     </div>
 
-    <!-- WAFFEN -->
     <div class="section">
         <h2>Waffen & Upgrades</h2>
         <p>Jede Waffe hat drei Upgrade‑Stufen. Danach schaltest du die nächste Waffenklasse frei.</p>
@@ -186,63 +224,22 @@
         </div>
     </div>
 
-    <!-- RUNDEN -->
     <div class="section">
         <h2>Runden & Gegnerentwicklung</h2>
         <p>Mit jeder Runde werden die Gegner stärker. Sie lernen schnell ... schneller als uns lieb ist.</p>
         <p>Plane deine Upgrades, sonst wirst du schneller gefressen, als du „Rinderkennzeichnungsfleischetikettierungsüberwachungsaufgabenübertragungsgesetz“ sagen kannst.</p>
     </div>
 
-    <!-- UI -->
     <div class="section">
-        <h2>Benutzeroberfläche (UI)</h2>
-        <p>Die UI zeigt dir alles, was du wissen musst:</p>
-        <ul>
-            <li>Lebenspunkte</li>
-            <li>Schrott</li>
-            <li>Aktuelle Waffe</li>
-            <li>Dash‑Cooldown</li>
-            <li>Gegner‑Lebensbalken</li>
-            <li>Cycle‑Animationen (Blinken, Effekte)</li>
-        </ul>
+        <h2>Entwicklung — garantiert KI‑frei™</h2>
+        <p>
+            Dieses Spiel wurde — laut interner Protokolle — vollständig ohne KI entwickelt.  
+            Nur echte Finger — echte Tastatur — echte Müdigkeit um 3:47 Uhr.
+        </p>
+        <p>
+            Wenn du stirbst, war das keine algorithmische Vorhersage — das war einfach Pech (oder menschlicher Trotz).
+        </p>
     </div>
-
-    <!-- SPEICHERN -->
-    <div class="section">
-        <h2>Speichern & Laden</h2>
-        <p>Das Spiel speichert automatisch alle 20 Sek. im Hintergrund.</p>
-        <p>Du kannst auch manuell speichern oder laden, aber pass auf, dass du nicht versehentlich einen alten Spielstand überschreibst.</p>
-    </div>
-
-    <!-- TUTORIAL -->
-    <div class="section">
-        <h2>Das Tutorial</h2>
-        <p>Ich führe dich durch die Grundlagen. Schau gern mal vorbei!</p>
-    </div>
-
-    <div class="section">
-    <h2>Entwicklung — garantiert KI‑frei™</h2>
-    <p>
-        Dieses Spiel wurde — laut interner Protokolle — vollständig ohne KI entwickelt.  
-        Kein neuronales Netz — kein Transformer‑Modell — kein synthetischer Wahnsinn.  
-        Nur echte Finger — echte Tastatur — echte Müdigkeit um 3:47 Uhr.
-    </p>
-    <p>
-        Es gibt keine semantische Vektorraumoptimierung — keine probabilistische Entscheidungslogik — keine emergente Intelligenz.  
-        Wenn du stirbst, war das keine algorithmische Vorhersage — das war einfach Pech.
-    </p>
-    <p>
-        Anders gesagt:  
-        <em>„Ich bin keine KI — aber ich wurde so programmiert, dass ich wie ein Mensch programmiere.“</em>  
-        — hat niemand gesagt, außer vielleicht ein besonders selbstverliebter Kommentar im Code.
-    </p>
-    <p>
-        Toxic Horizon ist handgemacht — mit Liebe, Wut, Kaffee und einer Prise Wahnsinn.  
-        Und wenn du denkst, das Spiel sei unfair — dann liegt das nicht an maschinellem Lernen.  
-        Sondern an menschlichem Trotz.
-    </p>
-</div>
-
 
 </div>
 

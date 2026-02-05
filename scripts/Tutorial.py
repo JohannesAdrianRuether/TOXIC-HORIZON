@@ -55,6 +55,8 @@ class Tutorial(arcade.View):
         self.button_e_sprite = arcade.Sprite("sprites/EButton.png")
 
         Daten.set_data("Health", 100)
+        self.GameUIEngine.minimap_setup()
+
         
 
 
@@ -81,16 +83,20 @@ class Tutorial(arcade.View):
             0: "Lorem ipsum dolor sit amet ... Ähem ... 'tschuldige falscher Text ...",
             1: "…Oh. Ein neuer Überlebender? Ich bin Miro. Keine Sorge ich beiße nicht. :)",
             2: "Willkommen in der Zone. Seit dem Zusammenbruch ist hier alles ein bisschen… chaotisch.",
-            3: "Bevor du rausgehst: Bewegung ist überlebenswichtig. Nutze WASD um dich zu bewegen.",
-            4: "Wenn dir etwas zu nahe kommt: Linksklick. Dann schießt du. Zielen musst du selbst.",
-            5: "Du kannst auch dashen mit der Leertaste. Unten in der Mitte siehst du deine Dash-Anzeige.",
-            6: "Für jeden erledigten Gegner bekommst du Schrott. Schrott ist hier so etwas wie… Währung.",
-            7: "Mit genug Schrott kannst du deine Waffe upgraden. Mehr Schaden, mehr Überleben.",
-            8: "Aber Vorsicht: Mit jeder Runde werden die Monster stärker. Sie lernen schnell.",
-            9: "Und wenn deine Lebenspunkte auf 0 fallen… nun ja. Dann war's das. Game Over.",
-            10: "Manche Orte kannst du untersuchen oder betreten (Shop im Camp und Flucht aus dem Kampfbereich). Wenn du ein Symbol siehst: Drücke E zum Interagieren.",
-            11: "Also: Bleib in Bewegung, sammle Schrott, upgrade deine Waffe und überlebe. Bereit? Das war's von mir, viel erfolg dort draußen!",
-            12: "Falls du irgendwan mal Hile brauchen solltest, warte ich im Hauptmenü unter >MIRI'S WIKI< auf dich!"
+            3: "Das wichtigste zuerst: Oben link in der Ecke siehst du deine HP und deinen gesammelten Schrot.",
+            4: "Darüber siehst du immer eine MiniMap! Falls du dich hier draußen mal verlaufen solltest ... Die RobotterSpinnen (S.P.I.N.N.E.N.) sind rot, die Dronen blau, Du Lila",
+            5: "Dein Fluchtpunkt ist grün! Vielleicht musst du ihn manchmal erst suchen. Wenn du deine Arbeit erledigt hast, kann du mit ihm ins Camp zurück kehren um zu leveln.",
+            6: "Bevor du rausgehst: Bewegung ist überlebenswichtig. Nutze WASD um dich zu bewegen.",
+            7: "Wenn dir etwas zu nahe kommt: Linksklick. Dann schießt du. Zielen musst du selbst.",
+            8: "Du kannst auch dashen mit der Leertaste. Unten in der Mitte siehst du deine Dash-Anzeige.",
+            9: "Für jeden erledigten Gegner bekommst du Schrott. Schrott ist hier so etwas wie… Währung.",
+            10: "Aber ACHTUNG! Fallen die HP des Gegners unter 25% wird er nochmal so richtig sauer!",
+            11: "Mit genug Schrott kannst du deine Waffe upgraden. Mehr Schaden, mehr Überleben.",
+            12: "Aber Vorsicht: Mit jeder Runde werden die Monster stärker. Sie lernen schnell.",
+            13: "Und wenn deine Lebenspunkte auf 0 fallen… nun ja. Dann war's das. Game Over.",
+            14: "Manche Orte kannst du untersuchen oder betreten (Shop im Camp und Flucht aus dem Kampfbereich). Wenn du ein Symbol siehst: Drücke E zum Interagieren.",
+            15: "Also: Bleib in Bewegung, sammle Schrott, upgrade deine Waffe und überlebe. Bereit? Das war's von mir, viel erfolg dort draußen!",
+            16: "Falls du irgendwan mal Hile brauchen solltest, warte ich im Hauptmenü unter >MIRI'S WIKI< auf dich!"
         }
 
         self.dash_x, self.dash_y = self.GameMovementEngine.player_movement(
@@ -106,7 +112,7 @@ class Tutorial(arcade.View):
         self.camera.use()
         self.scene.draw()
  
-        if self.phase >= 4:
+        if self.phase >= 7:
             self.GameUIEngine.Game_draw_enemy_health(self.GameMovementEngine)
             self.GameMovementEngine.draw_enemys()
 
@@ -148,11 +154,11 @@ class Tutorial(arcade.View):
     def on_update(self, delta_time):
         self.GameUIEngine.run_cycle()
         self.GameUIEngine.Game_update_UI()
-        if self.phase >= 4:
+        if self.phase >= 7:
             self.GameMovementEngine.run_enemy_movement(self.Player_sprite)
         self.playerisdead = self.GameMovementEngine.all_collision_checks(self.Player_sprite)
         
-        if self.phase >= 3:
+        if self.phase >= 6:
             self.dash_x, self.dash_y = self.GameMovementEngine.player_movement(
                 self.Player_sprite, self.keys_down,
                 self.dash_x, self.dash_y, self.dash_decay, delta_time
@@ -160,6 +166,8 @@ class Tutorial(arcade.View):
             self.text_username.x = self.Player_sprite.center_x
             self.text_username.y = self.Player_sprite.center_y + 55
             self.update_player_animation(delta_time)
+        self.GameUIEngine.update_minimap(self.tilemap, self.scene, self.Player_sprite, self.GameMovementEngine.path_Enemy_sprite_list, self.GameMovementEngine.following_Enemy_sprite_list, self.interactiontiles)
+        
 
     def update_player_animation(self, delta_time):
         # Bewegung prüfen
@@ -212,7 +220,7 @@ class Tutorial(arcade.View):
 
         
         if symbol == arcade.key.ENTER:
-            if self.phase < 12:
+            if self.phase < 16:
                 self.phase += 1
             else:
                 arcade.schedule(lambda dt: self.window.show_view(MenuView(currently_in_game=False)), 0)

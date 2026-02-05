@@ -75,25 +75,105 @@ class UIEngine():
 
         self.heart_sprite.scale = 1.8 + (self.all_flashing_cycles[0] - 50) * (0.4 / (255 - 50))
         arcade.draw_sprite(self.heart_sprite, pixelated=True)
+        if hasattr(self, "minimap_sprite_list"):
+            self.minimap_sprite_list.draw()
+            arcade.draw_lbwh_rectangle_outline(0, self.window.height-self.minimap_height,self.minimap_width,self.minimap_height, arcade.color.WHITE, 2)
     
     def draw_debug(self):
         self.debugtext_TIME.draw()
         self.debugtext_fps.draw()
 
+    def update_minimap(self, tilemap, scene, player, path_enemys, follow_enemys, interactiontiles):
+        
+        map_width  = tilemap.width * tilemap.tile_width * tilemap.scaling
+        map_height = tilemap.height * tilemap.tile_height * tilemap.scaling
+
+        self.enemy_dot = arcade.make_circle_texture(12, arcade.color.RED)
+
+        proj = (0, map_width, 0, map_height)
+
+        atlas = self.minimap_sprite_list.atlas
+
+        with atlas.render_into(self.minimap_texture, projection=proj) as fbo:
+            fbo.clear(color=arcade.color.BLACK)
+
+            scene.draw()
+
+            arcade.draw_circle_filled(player.center_x, player.center_y, 50, arcade.color.PURPLE)
+
+            for enemy in path_enemys:
+                arcade.draw_circle_filled(enemy.center_x, enemy.center_y, 25, arcade.color.RED)
+            
+            for enemy in follow_enemys:
+                arcade.draw_circle_filled(enemy.center_x, enemy.center_y, 25, arcade.color.BLUE)
+            
+            for interaction in interactiontiles:
+                arcade.draw_lbwh_rectangle_filled(interaction.center_x-interaction.width//2,interaction.center_y-interaction.height//2,interaction.width, interaction.height, arcade.color.GREEN)
+
+    def minimap_setup(self):
+        # --- Minimap Setup ---
+        self.minimap_width = 256
+        self.minimap_height = 256
+
+        # Leere Texture erzeugen
+        self.minimap_texture = arcade.Texture.create_empty(
+            "minimap",
+            (self.minimap_width, self.minimap_height)
+        )
+
+        # Sprite, das die Minimap anzeigt
+        self.minimap_sprite = arcade.Sprite(
+            self.minimap_texture,
+            center_x=self.minimap_width // 2,
+            center_y=self.window.height - self.minimap_height // 2
+        )
+
+        self.minimap_sprite_list = arcade.SpriteList()
+        self.minimap_sprite_list.append(self.minimap_sprite)
+
     def Game_draw_enemy_health(self, Movementengine):
+
+        def health_to_color(health):
+                if health >= 80:
+                    return arcade.color.GREEN
+                elif health >= 60:
+                    return arcade.color.YELLOW
+                elif health >= 40:
+                    return arcade.color.ORANGE
+                else:
+                    return arcade.color.RED
+
         PathEnemyList, FollowEnemyList, RetourningList = Movementengine.get_all_enemy_lists()
         for enemy in PathEnemyList:
-            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, (enemy.health/enemy.abs_health)*100, 5, arcade.color.GREEN)
+            health_in_prozent = (enemy.health/enemy.abs_health)*100
+
+            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, health_in_prozent, 5, health_to_color(health_in_prozent))
+
+
         for enemy in FollowEnemyList:
-            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, (enemy.health/enemy.abs_health)*100, 5, arcade.color.GREEN)
+            health_in_prozent = (enemy.health/enemy.abs_health)*100
+            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, health_in_prozent, 5, health_to_color(health_in_prozent))
+
+
         for enemy in RetourningList:
-            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, (enemy.health/enemy.abs_health)*100, 5, arcade.color.GREEN)
+            health_in_prozent = (enemy.health/enemy.abs_health)*100
+            arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, health_in_prozent, 5, health_to_color(health_in_prozent))
 
     def Game_update_UI(self):
+        
+        self.text_HP.text = f"HP: {self.Daten.get_one_data('Health')}"
+        self.text_Schrott.text = f"Schrott: {int(self.Daten.get_one_data('Schrott'))}"
+        if hasattr(self, "minimap_sprite_list"):
+            self.text_HP.position = (42, self.window.height - self.minimap_height - 42)
+            self.text_Schrott.position = (42, self.window.height - self.minimap_height - 84)
+        else:
+            self.text_HP.position = (50, 100)
+            self.text_Schrott.position = (50, 50)
+        
+
         self.text_ultpoints.text = f"Ultpoints: {self.Daten.get_one_data('Ultpoints')}"
         self.text_level.text = f"Level: {self.Daten.get_one_data('Levelnumber')}"
-        self.text_Schrott.text = f"Schrott: {int(self.Daten.get_one_data('Schrott'))}"
-        self.text_HP.text = f"HP: {self.Daten.get_one_data('Health')}"
+        
         self.debugtext_TIME.text = f"{time.monotonic():.2f}"
         self.debugtext_fps.text = f"FPS: {round(arcade.get_fps(60),1)}"
         self.scrap_sprite.center_x = self.text_Schrott.position[0] - 15
