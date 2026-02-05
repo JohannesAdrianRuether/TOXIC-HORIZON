@@ -11,8 +11,29 @@ class Tutorial(arcade.View):
         Daten.set_data("Username", "Überlebender")
         self.tilemap = arcade.load_tilemap("maps/TutorialMap.tmx", scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
-        self.Player_sprite = arcade.Sprite("sprites/Player.png")
+        self.Player_sprite = arcade.Sprite()
         self.Player_sprite.scale = 2
+
+        # Walk only
+        self.player_walk_right = [
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+        ]
+
+        self.player_walk_left = [
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+        ]
+
+        self.player_anim_timer = 0
+        self.player_anim_index = 0
+        self.player_facing = "right"
+
+        # Starttexture
+        self.Player_sprite.texture = self.player_walk_right[0]
+
       
         
         for spawn in self.scene["spawns"]:
@@ -138,6 +159,40 @@ class Tutorial(arcade.View):
             )
             self.text_username.x = self.Player_sprite.center_x
             self.text_username.y = self.Player_sprite.center_y + 55
+            self.update_player_animation(delta_time)
+
+    def update_player_animation(self, delta_time):
+        # Bewegung prüfen
+        moving = (
+            arcade.key.W in self.keys_down or
+            arcade.key.A in self.keys_down or
+            arcade.key.S in self.keys_down or
+            arcade.key.D in self.keys_down or
+            self.dash_x != 0 or self.dash_y != 0
+        )
+
+        # Richtung bestimmen
+        if arcade.key.A in self.keys_down:
+            self.player_facing = "left"
+        elif arcade.key.D in self.keys_down:
+            self.player_facing = "right"
+
+        # Wenn nicht in Bewegung → keine Animation
+        if not moving:
+            return
+
+        # Timer
+        self.player_anim_timer += delta_time
+        if self.player_anim_timer < 0.12:
+            return
+        self.player_anim_timer = 0
+
+        # Frames auswählen
+        frames = self.player_walk_right if self.player_facing == "right" else self.player_walk_left
+
+        # Frame wechseln
+        self.player_anim_index = (self.player_anim_index + 1) % len(frames)
+        self.Player_sprite.texture = frames[self.player_anim_index]
 
             
             

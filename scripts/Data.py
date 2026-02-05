@@ -110,6 +110,7 @@ class DatenManagement:
 
     def change_data(self, attribute : str, change : int):
         self.data[attribute] += change
+        return
         
 
     def set_data(self, attribute: str, change : int):

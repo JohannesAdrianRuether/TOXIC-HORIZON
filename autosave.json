@@ -1,10 +1,10 @@
 {
-    "Username": "\u00dcberlebender",
-    "Health": 100,
+    "Username": "",
+    "Health": 0.0,
     "Ultpoints": 0,
     "Schrott": 0,
     "CurrentUlt": null,
-    "Levelnumber": 0,
+    "Levelnumber": 2,
     "EnemyDevelopement": 5,
     "CurrentWeapon": "1.1"
 }

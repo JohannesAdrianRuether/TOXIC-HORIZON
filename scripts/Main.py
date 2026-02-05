@@ -93,7 +93,7 @@ class NewGameView(arcade.View):
         super().__init__()
         self._username = ""
         self.text_title = arcade.Text("Benennen Sie Ihren Charakter", self.window.width // 2, self.window.height // 2 + 300, arcade.color.WHITE, 30, anchor_x="center")
-        self.Player_sprite = arcade.Sprite("sprites/Player.png")
+        self.Player_sprite = arcade.Sprite("sprites/player/walk_right_1.png")
         self.Player_sprite.scale = 4
 
     def on_draw(self):
@@ -124,8 +124,30 @@ class GameView(arcade.View):
 
         
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
-        self.Player_sprite = arcade.Sprite("sprites/Player.png")
+        self.Player_sprite = arcade.Sprite()
         self.Player_sprite.scale = 2
+
+        # Walk only
+        self.player_walk_right = [
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+        ]
+
+        self.player_walk_left = [
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+        ]
+
+        self.player_anim_timer = 0
+        self.player_anim_index = 0
+        self.player_facing = "right"
+
+        # Starttexture
+        self.Player_sprite.texture = self.player_walk_right[0]
+
+
 
         # --- Minimap Setup ---
         self.minimap_width = 256
@@ -251,6 +273,41 @@ class GameView(arcade.View):
 
         self.text_username.x = self.Player_sprite.center_x
         self.text_username.y = self.Player_sprite.center_y + 55
+        self.update_player_animation(delta_time)
+
+
+    def update_player_animation(self, delta_time):
+        # Bewegung prüfen
+        moving = (
+            arcade.key.W in self.keys_down or
+            arcade.key.A in self.keys_down or
+            arcade.key.S in self.keys_down or
+            arcade.key.D in self.keys_down or
+            self.dash_x != 0 or self.dash_y != 0
+        )
+
+        # Richtung bestimmen
+        if arcade.key.A in self.keys_down:
+            self.player_facing = "left"
+        elif arcade.key.D in self.keys_down:
+            self.player_facing = "right"
+
+        # Wenn nicht in Bewegung → keine Animation
+        if not moving:
+            return
+
+        # Timer
+        self.player_anim_timer += delta_time
+        if self.player_anim_timer < 0.12:
+            return
+        self.player_anim_timer = 0
+
+        # Frames auswählen
+        frames = self.player_walk_right if self.player_facing == "right" else self.player_walk_left
+
+        # Frame wechseln
+        self.player_anim_index = (self.player_anim_index + 1) % len(frames)
+        self.Player_sprite.texture = frames[self.player_anim_index]
 
         
         
@@ -284,8 +341,30 @@ class LobbyView(arcade.View):
         super().__init__()
         self.tilemap = arcade.load_tilemap("maps/LobbyMap.tmx", scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
-        self.Player_sprite = arcade.Sprite("sprites/Player.png")
+        self.Player_sprite = arcade.Sprite()
         self.Player_sprite.scale = 2
+
+        # Walk only
+        self.player_walk_right = [
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture("sprites/player/walk_right_1.png"),
+        ]
+
+        self.player_walk_left = [
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture("sprites/player/walk_left_1.png"),
+        ]
+
+        self.player_anim_timer = 0
+        self.player_anim_index = 0
+        self.player_facing = "right"
+
+        # Starttexture
+        self.Player_sprite.texture = self.player_walk_right[0]
+
+
         self.button_e_sprite = arcade.Sprite("sprites/EButton.png")
 
         for spawn in self.scene["spawns"]:
@@ -336,6 +415,42 @@ class LobbyView(arcade.View):
         self.LobbyUIEngine.run_cycle()
         self.LobbyUIEngine.Game_update_UI()
         self.text_username.x, self.text_username.y = self.Player_sprite.center_x, self.Player_sprite.center_y + 55
+        self.update_player_animation(delta_time)
+
+    def update_player_animation(self, delta_time):
+        # Bewegung prüfen
+        moving = (
+            arcade.key.W in self.keys_down or
+            arcade.key.A in self.keys_down or
+            arcade.key.S in self.keys_down or
+            arcade.key.D in self.keys_down or
+            self.dash_x != 0 or self.dash_y != 0
+        )
+
+        # Richtung bestimmen
+        if arcade.key.A in self.keys_down:
+            self.player_facing = "left"
+        elif arcade.key.D in self.keys_down:
+            self.player_facing = "right"
+
+        # Wenn nicht in Bewegung → keine Animation
+        if not moving:
+            return
+
+        # Timer
+        self.player_anim_timer += delta_time
+        if self.player_anim_timer < 0.12:
+            return
+        self.player_anim_timer = 0
+
+        # Frames auswählen
+        frames = self.player_walk_right if self.player_facing == "right" else self.player_walk_left
+
+        # Frame wechseln
+        self.player_anim_index = (self.player_anim_index + 1) % len(frames)
+        self.Player_sprite.texture = frames[self.player_anim_index]
+
+
 
     def on_key_press(self, symbol, modifiers):
         self.keys_down.add(symbol)
@@ -348,7 +463,7 @@ class LobbyView(arcade.View):
                 if itype == "shop" and symbol == arcade.key.E:
                     self.shop_is_entered = True
                 elif itype == "startgame" and symbol == arcade.key.E:
-                    Daten.change_data("Levelnumber", 1)
+                    arcade.schedule(lambda dt: Daten.change_data("Levelnumber", 1), 0)
                     arcade.schedule(lambda dt: self.window.show_view(GameView()), 0)
 
         if symbol == arcade.key.ESCAPE and self.shop_is_entered == True:
