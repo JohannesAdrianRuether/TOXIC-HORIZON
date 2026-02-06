@@ -43,7 +43,7 @@ class UIEngine():
         self.heart_sprite.scale = 1.8
 
         self.text_console = arcade.Text("", 10, 25, arcade.color.BLACK, 15, anchor_x="left", anchor_y="center")
-        self.text_console_info = arcade.Text("command.variable.value", 10, 10, arcade.color.BLACK, 11, anchor_x="left", anchor_y="center")
+        self.text_console_info = arcade.Text("/command parameter Value", 10, 10, arcade.color.BLACK, 11, anchor_x="left", anchor_y="center")
 
     def run_cycle(self):
         if self.all_flashing_cycles[1] == "UP":
@@ -92,47 +92,55 @@ class UIEngine():
         self.text_console_info.draw()
 
     def run_console(self, text, MovementEngine):
-        command : list = str(text).split(".")
+        # Entferne führenden Slash, falls vorhanden
+        if text.startswith("/"):
+            text = text[1:]
 
+        # Teile den Text nach Leerzeichen
+        command = text.split(" ")
+
+        # Beispiel: /set health 100 → command = ['set', 'health', '100']
         if command[0] == 'set':
             if command[1] == 'health':
                 self.Daten.set_data("Health", int(command[2]))
-            if command[1] == 'scrap':
+            elif command[1] == 'scrap':
                 self.Daten.set_data("Schrott", int(command[2]))
-            if command[1] == "name":
-                self.Daten.set_data("Username", str(command[2]))
-            if command[1] == "weapon":
-                self.Daten.set_data("CurrentWeapon", str(command[2] + "." +command[3]))
-            if command[1] == "level":
+            elif command[1] == "name":
+                # Alles nach dem Befehl als Name zusammenfügen
+                name_value = " ".join(command[2:])
+                self.Daten.set_data("Username", name_value)
+            elif command[1] == "weapon":
+                weapon_value = ".".join(command[2:])
+                self.Daten.set_data("CurrentWeapon", weapon_value)
+            elif command[1] == "level":
                 self.Daten.set_data("Levelnumber", int(command[2]))
-        
-        if command[0] == "enemys":
+
+        elif command[0] == "enemys":
             if command[1] == 'spawn':
                 MovementEngine.spawn_enemys()
-            if command[1] == 'kill':
+            elif command[1] == 'kill':
                 MovementEngine.kill_all_enemys()
 
-        if command[0] == "volume":
+        elif command[0] == "volume":
             if command[1] == 'music':
                 self.Daten.set_data("MusicVolume", command[2])
-            if command[1] == 'sound':
+            elif command[1] == 'sound':
                 self.Daten.set_data("SoundVolume", command[2])
-            
-        if command[0] == 'overwrite':
+
+        elif command[0] == 'overwrite':
             if command[1] == 'damage':
                 try:
-                    int(command[2])
                     MovementEngine.overwrite_damage = int(command[2])
                 except ValueError:
                     if command[2] == "default":
                         MovementEngine.overwrite_damage = None
-            if command[1] == 'speed':
+            elif command[1] == 'speed':
                 try:
-                    int(command[2])
                     MovementEngine.overwrite_playerspeed = int(command[2])
                 except ValueError:
                     if command[2] == "default":
                         MovementEngine.overwrite_playerspeed = None
+
 
 
     def update_minimap(self, tilemap, scene, player, path_enemys, follow_enemys, interactiontiles):
