@@ -241,6 +241,48 @@
         </p>
     </div>
 
+    <div class="section">
+        <h2>Commands</h2>
+        <p>Für Entwickler, Tester oder einfach nur Neugierige:  
+        Das Spiel besitzt eine kleine, aber mächtige Debug‑Konsole.  
+        Öffne sie und gib Befehle im Format <b>command.variable.value</b> ein.</p>
+
+        <h3>Spielerwerte ändern</h3>
+        <ul>
+            <li><b>set.health.X</b> – Setzt die HP auf X</li>
+            <li><b>set.scrap.X</b> – Setzt den Schrott auf X</li>
+            <li><b>set.name.X</b> – Ändert den Spielernamen</li>
+            <li><b>set.weapon.A.B</b> – Setzt die aktuelle Waffe auf Klasse A, Stufe B</li>
+            <li><b>set.level.X</b> – Setzt die aktuelle Levelnummer</li>
+        </ul>
+
+        <h3>Gegnerkontrolle</h3>
+        <ul>
+            <li><b>enemys.spawn</b> – Spawnt sofort neue Gegner</li>
+            <li><b>enemys.kill</b> – Entfernt alle aktiven Gegner</li>
+        </ul>
+
+        <h3>Lautstärke</h3>
+        <ul>
+            <li><b>volume.music.X</b> – Setzt die Musiklautstärke</li>
+            <li><b>volume.sound.X</b> – Setzt die Soundeffekt‑Lautstärke</li>
+        </ul>
+
+        <h3>Temporäre Werte überschreiben</h3>
+        <p>Diese Befehle überschreiben Werte nur bis zum nächsten Reset.</p>
+        <ul>
+            <li><b>overwrite.damage.X</b> – Erzwingt Schaden X  
+                <br><i>overwrite.damage.default</i> – setzt wieder zurück</li>
+
+            <li><b>overwrite.speed.X</b> – Erzwingt Spielergeschwindigkeit X  
+                <br><i>overwrite.speed.default</i> – setzt wieder zurück</li>
+        </ul>
+
+        <p><i>Hinweis:</i> Falsche Eingaben führen einfach zu keiner Aktion.  
+        Die Konsole ist robust genug, um deine Tippfehler zu überleben.</p>
+    </div>
+
+
 </div>
 
 <script>
