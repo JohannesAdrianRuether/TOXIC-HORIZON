@@ -23,7 +23,9 @@ class DatenManagement:
             "CurrentUlt" : None,
             "Levelnumber": 0,
             "EnemyDevelopement" : 5,
-            "CurrentWeapon": "1.1"
+            "CurrentWeapon": "1.1",
+            "MusicVolume" : 1,
+            "SoundVolume" : 1
         }
 
         self.weapons = {

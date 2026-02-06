@@ -42,6 +42,8 @@ class UIEngine():
         self.heart_sprite = arcade.Sprite("sprites/heart.png")
         self.heart_sprite.scale = 1.8
 
+        self.text_console = arcade.Text("", 10, 25, arcade.color.BLACK, 15, anchor_x="left", anchor_y="center")
+        self.text_console_info = arcade.Text("command.variable.value", 10, 10, arcade.color.BLACK, 11, anchor_x="left", anchor_y="center")
 
     def run_cycle(self):
         if self.all_flashing_cycles[1] == "UP":
@@ -82,6 +84,56 @@ class UIEngine():
     def draw_debug(self):
         self.debugtext_TIME.draw()
         self.debugtext_fps.draw()
+
+    def draw_console(self, text):
+        arcade.draw_lbwh_rectangle_filled(0, 0, 300, 50, arcade.color.WHITE)
+        self.text_console.text = text
+        self.text_console.draw()
+        self.text_console_info.draw()
+
+    def run_console(self, text, MovementEngine):
+        command : list = str(text).split(".")
+
+        if command[0] == 'set':
+            if command[1] == 'health':
+                self.Daten.set_data("Health", int(command[2]))
+            if command[1] == 'scrap':
+                self.Daten.set_data("Schrott", int(command[2]))
+            if command[1] == "name":
+                self.Daten.set_data("Username", str(command[2]))
+            if command[1] == "weapon":
+                self.Daten.set_data("CurrentWeapon", str(command[2] + "." +command[3]))
+            if command[1] == "level":
+                self.Daten.set_data("Levelnumber", int(command[2]))
+        
+        if command[0] == "enemys":
+            if command[1] == 'spawn':
+                MovementEngine.spawn_enemys()
+            if command[1] == 'kill':
+                MovementEngine.kill_all_enemys()
+
+        if command[0] == "volume":
+            if command[1] == 'music':
+                self.Daten.set_data("MusicVolume", command[2])
+            if command[1] == 'sound':
+                self.Daten.set_data("SoundVolume", command[2])
+            
+        if command[0] == 'overwrite':
+            if command[1] == 'damage':
+                try:
+                    int(command[2])
+                    MovementEngine.overwrite_damage = int(command[2])
+                except ValueError:
+                    if command[2] == "default":
+                        MovementEngine.overwrite_damage = None
+            if command[1] == 'speed':
+                try:
+                    int(command[2])
+                    MovementEngine.overwrite_playerspeed = int(command[2])
+                except ValueError:
+                    if command[2] == "default":
+                        MovementEngine.overwrite_playerspeed = None
+
 
     def update_minimap(self, tilemap, scene, player, path_enemys, follow_enemys, interactiontiles):
         
@@ -209,7 +261,7 @@ class UIEngine():
         def on_left_click(event):
             if self.Daten.get_one_data("Schrott") > NextWeaponInfos["cost"]:
                 self.Daten.upgrade_weapon()
-                arcade.play_sound(self.sound_weapon_upgrade,2,loop=False)
+                arcade.play_sound(self.sound_weapon_upgrade, volume=int(self.Daten.get_one_data("SoundVolume")), loop=False)
 
 
         @self.right_button.event("on_click")

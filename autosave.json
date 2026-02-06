@@ -1,10 +1,12 @@
 {
     "Username": "",
-    "Health": 100,
+    "Health": 75.5,
     "Ultpoints": 0,
-    "Schrott": 30,
+    "Schrott": 75,
     "CurrentUlt": null,
     "Levelnumber": 0,
     "EnemyDevelopement": 5,
-    "CurrentWeapon": "1.1"
+    "CurrentWeapon": "1.1",
+    "MusicVolume": 1,
+    "SoundVolume": 1
 }

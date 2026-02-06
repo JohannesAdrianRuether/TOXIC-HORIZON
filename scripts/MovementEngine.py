@@ -16,10 +16,16 @@ class MovementEngine():
         self.sound_shot = arcade.Sound("sounds/singleshot.mp3")
         self.sound_walk = arcade.Sound("sounds/walk.mp3")
         self.walk_handle = None
+        self.overwrite_damage = None
+        self.overwrite_playerspeed = None
+
 
     def player_movement(self, player, keys_down, dash_x, dash_y, dash_decay, delta_time):
         self.player = player
-        speed = 300 * delta_time 
+        if self.overwrite_playerspeed == None:
+            speed = 300 * delta_time
+        else:
+            speed = self.overwrite_playerspeed * delta_time
         walls = self.scene["Walls"]
         
 
@@ -54,7 +60,7 @@ class MovementEngine():
         if is_moving:
             # Wenn der Sound noch nicht spielt, starte ihn
             if self.walk_handle is None:
-                self.walk_handle = arcade.play_sound(self.sound_walk, loop=True, speed=16)
+                self.walk_handle = arcade.play_sound(self.sound_walk, loop=True, volume=int(self.Daten.get_one_data("SoundVolume")), speed=20)
         else:
             # Wenn der Spieler steht, aber der Sound noch läuft: Stoppen!
             if self.walk_handle is not None:
@@ -100,74 +106,73 @@ class MovementEngine():
         return dash_x, dash_y, False
 
     def spawn_enemys(self):
-        self.following_Enemy_sprite_list = arcade.SpriteList()
-        self.follow_enemy_speed = 4
-        self.path_Enemy_sprite_list = arcade.SpriteList()
-        self.path_enemy_speed = 5
+        if self.scene['spawns'] != None:
+            self.following_Enemy_sprite_list = arcade.SpriteList()
+            self.follow_enemy_speed = 4
+            self.path_Enemy_sprite_list = arcade.SpriteList()
+            self.path_enemy_speed = 5
 
-        for i in range(2):
-            enemy = arcade.Sprite()
-            enemy.scale = 3
+            for i in range(2):
+                enemy = arcade.Sprite()
+                enemy.scale = 3
 
-            # --- TEXTURES EINMAL LADEN ---
-            enemy.textures = [
-                arcade.load_texture("sprites/enemy2/Drone1.png"),
-                arcade.load_texture("sprites/enemy2/Drone2.png")
-            ]
+                # --- TEXTURES EINMAL LADEN ---
+                enemy.textures = [
+                    arcade.load_texture("sprites/enemy2/Drone1.png"),
+                    arcade.load_texture("sprites/enemy2/Drone2.png")
+                ]
 
-            enemy.current_texture = 0
-            enemy.texture = enemy.textures[0]
-            enemy.animation_timer = 0.0
+                enemy.current_texture = 0
+                enemy.texture = enemy.textures[0]
+                enemy.animation_timer = 0.0
 
-            enemy.health = 20 + self.Daten.get_one_data("Levelnumber") * 2 + self.Daten.get_one_data("Levelnumber")**1.2
-            enemy.abs_health = enemy.health
+                enemy.health = 20 + self.Daten.get_one_data("Levelnumber") * 2 + self.Daten.get_one_data("Levelnumber")**1.2
+                enemy.abs_health = enemy.health
 
-            enemy.origin_is_follow = True
+                enemy.origin_is_follow = True
 
-            enemy.change_x = 0
-            enemy.change_y = 0
+                enemy.change_x = 0
+                enemy.change_y = 0
 
-            self.following_Enemy_sprite_list.append(enemy)
-
-
-        for i in range(8):
-            enemy = arcade.Sprite()
-            enemy.scale = 2
-
-            # --- TEXTURES EINMAL LADEN ---
-            enemy.textures = [
-                arcade.load_texture("sprites/spider/spider1.png"),
-                arcade.load_texture("sprites/spider/spider2.png"),
-                arcade.load_texture("sprites/spider/spider3.png"),
-                arcade.load_texture("sprites/spider/spider4.png"),
-            ]
-
-            enemy.current_texture = 0
-            enemy.texture = enemy.textures[0]
-            enemy.animation_timer = 0.0
-
-            enemy.health = 25 + self.Daten.get_one_data("Levelnumber") * 2 + self.Daten.get_one_data("Levelnumber") ** 1.2
-            enemy.abs_health = enemy.health
-
-            enemy.change_x = 0
-            enemy.change_y = 0
-            enemy.is_path = True
-
-            self.path_Enemy_sprite_list.append(enemy)
+                self.following_Enemy_sprite_list.append(enemy)
 
 
-        
-        spawner = self.scene["spawns"]
-        FollowEnemySpawner = [s for s in spawner if s.properties.get("spawn") == 'enemy1']
-        PathEnemySpawnerONE = [s for s in spawner if s.properties.get("spawn") == 'enemy2']
+            for i in range(8):
+                enemy = arcade.Sprite()
+                enemy.scale = 2
 
-        for enemy in self.following_Enemy_sprite_list:
-            spawn = FollowEnemySpawner.pop()
-            enemy.center_x, enemy.center_y = spawn.center_x, spawn.center_y
+                # --- TEXTURES EINMAL LADEN ---
+                enemy.textures = [
+                    arcade.load_texture("sprites/spider/spider1.png"),
+                    arcade.load_texture("sprites/spider/spider2.png"),
+                    arcade.load_texture("sprites/spider/spider3.png"),
+                    arcade.load_texture("sprites/spider/spider4.png"),
+                ]
 
-        for enemy in self.path_Enemy_sprite_list:
-            spawn = PathEnemySpawnerONE.pop()
-            enemy.center_x, enemy.center_y = spawn.center_x, spawn.center_y
+                enemy.current_texture = 0
+                enemy.texture = enemy.textures[0]
+                enemy.animation_timer = 0.0
+
+                enemy.health = 25 + self.Daten.get_one_data("Levelnumber") * 2 + self.Daten.get_one_data("Levelnumber") ** 1.2
+                enemy.abs_health = enemy.health
+
+                enemy.change_x = 0
+                enemy.change_y = 0
+                enemy.is_path = True
+
+                self.path_Enemy_sprite_list.append(enemy)
+            
+            spawner = self.scene["spawns"]
+            FollowEnemySpawner = [s for s in spawner if s.properties.get("spawn") == 'enemy1']
+            PathEnemySpawnerONE = [s for s in spawner if s.properties.get("spawn") == 'enemy2']
+
+            for enemy in self.following_Enemy_sprite_list:
+                spawn = FollowEnemySpawner.pop()
+                enemy.center_x, enemy.center_y = spawn.center_x, spawn.center_y
+
+            for enemy in self.path_Enemy_sprite_list:
+                spawn = PathEnemySpawnerONE.pop()
+                enemy.center_x, enemy.center_y = spawn.center_x, spawn.center_y
 
     def draw_enemys(self):
         self.following_Enemy_sprite_list.draw(pixelated=True)
@@ -335,6 +340,18 @@ class MovementEngine():
             sprite.current_texture = (sprite.current_texture + 1) % len(sprite.textures)
             sprite.texture = sprite.textures[sprite.current_texture]
 
+    def kill_all_enemys(self):
+        for enemy in self.following_Enemy_sprite_list:
+            self.enemy_death(enemy)
+        for enemy in self.path_Enemy_sprite_list:
+            self.enemy_death(enemy)
+        for enemy in self.abandon_path_list:
+            self.enemy_death(enemy)
+        for enemy in self.retourning_list:
+            self.enemy_death(enemy)
+
+
+
 
 
     def all_collision_checks(self, player):
@@ -346,11 +363,18 @@ class MovementEngine():
             if collides_path or collides_follow:
                 bullet.kill()
                 for enemy in collides_path:
-                    enemy.health -= self.Daten.get_one_weapon_data(self.currentWeapon, "damage")
+                    if self.overwrite_damage == None:
+                        enemy.health -= self.Daten.get_one_weapon_data(self.currentWeapon, "damage")
+                    else:
+                        enemy.health -= self.overwrite_damage
                     if enemy.health <= 0:
-                        self.enemy_death(enemy)    
+                        self.enemy_death(enemy)
+
                 for enemy in collides_follow:
-                    enemy.health -= self.Daten.get_one_weapon_data(self.currentWeapon, "damage")
+                    if self.overwrite_damage == None:
+                        enemy.health -= self.Daten.get_one_weapon_data(self.currentWeapon, "damage")
+                    else:
+                        enemy.health -= self.overwrite_damage
                     if enemy.health <= 0:
                         self.enemy_death(enemy)  
 
@@ -386,7 +410,7 @@ class MovementEngine():
         current_time = time.monotonic()
         self.currentWeapon = self.Daten.get_one_data("CurrentWeapon")
         if (current_time - self.last_shoot_time) >= self.Daten.get_one_weapon_data(self.currentWeapon, "speed"):
-            arcade.play_sound(self.sound_shot, 0.25, loop=False)
+            arcade.play_sound(self.sound_shot, volume=int(self.Daten.get_one_data("SoundVolume")), loop=False)
             bullet = arcade.Sprite("sprites/bullet.png")
             bullet.scale = 1.5
             bullet.position = self.player.position
