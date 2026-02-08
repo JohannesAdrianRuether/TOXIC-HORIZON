@@ -1,6 +1,7 @@
 import arcade
 from arcade import gui
 import time
+import tkinter
 
 
 
@@ -13,6 +14,7 @@ class UIEngine():
         self.shop_manager = gui.UIManager()
         self.shop_manager.enable()
         self.Daten = Daten
+        
         
 
 
@@ -44,6 +46,7 @@ class UIEngine():
 
         self.text_console = arcade.Text("", 10, 25, arcade.color.BLACK, 15, anchor_x="left", anchor_y="center")
         self.text_console_info = arcade.Text("/command parameter Value", 10, 10, arcade.color.BLACK, 11, anchor_x="left", anchor_y="center")
+        self.show_help = False
 
     def run_cycle(self):
         if self.all_flashing_cycles[1] == "UP":
@@ -91,6 +94,31 @@ class UIEngine():
         self.text_console.draw()
         self.text_console_info.draw()
 
+
+    def draw_help(self):
+        if self.show_help:
+            # Prüfen, ob z.B. 5 Sekunden vergangen sind
+            if time.monotonic() - self.help_time < 5.0:
+                arcade.draw_lbwh_rectangle_filled(
+                    self.window.width//2-150, 
+                    self.window.height//2-200, 
+                    300, 400, arcade.color.WHITE_SMOKE
+                )
+                arcade.draw_text(
+                    "/set health x\n/set scrap x\n/set name x\n/set weapon x.x\n/set level x\n\n/enemys spawn\n/enemys kill\n\n/overwrite damage x/default\n/overwrite speed x/default\n\n/volume sound x",
+                    self.window.width // 2,
+                    self.window.height // 2,
+                    arcade.color.BLACK,
+                    14,
+                    anchor_y="center",
+                    anchor_x="center",
+                    multiline=True,
+                    width=300,     
+                    align="center" 
+                )
+            else:
+                self.show_help = False # Timer abgelaufen
+
     def run_console(self, text, MovementEngine):
         # Entferne führenden Slash, falls vorhanden
         if text.startswith("/"):
@@ -100,6 +128,9 @@ class UIEngine():
         command = text.split(" ")
 
         # Beispiel: /set health 100 → command = ['set', 'health', '100']
+        if command[0] == 'help':
+            self.show_help = True
+            self.help_time = time.monotonic()
         if command[0] == 'set':
             if command[1] == 'health':
                 self.Daten.set_data("Health", int(command[2]))

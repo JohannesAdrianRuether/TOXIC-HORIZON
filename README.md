@@ -31,3 +31,5 @@ user friendly commands der cheat console übersetzen
 enemy.kill muss richtig (komplett) ausgeführt werden!
 enemy.spawn darf in lobby nicht möglich sein!
 command speicher, wie in minecraft :)
+help
+activate brainrot corner

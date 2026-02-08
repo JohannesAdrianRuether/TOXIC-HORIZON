@@ -25,7 +25,8 @@ class DatenManagement:
             "EnemyDevelopement" : 5,
             "CurrentWeapon": "1.1",
             "MusicVolume" : 1,
-            "SoundVolume" : 1
+            "SoundVolume" : 1,
+            "PreviousCommands" : []
         }
 
         self.weapons = {
@@ -144,6 +145,20 @@ class DatenManagement:
         self.data["Schrott"] -= self.weapons[NewWeapon]["cost"]
 
         self.autosave()
+
+    def get_previous_commands(self):
+        return self.data["PreviousCommands"]
+    
+    def append_to_previous_commands(self, newCommand: str):
+        if not newCommand.strip():
+            return
+
+        self.data["PreviousCommands"].append(newCommand)
+
+        # optionales Limit (empfohlen)
+        MAX_HISTORY = 50
+        self.data["PreviousCommands"] = self.data["PreviousCommands"][-MAX_HISTORY:]
+
 
 
 

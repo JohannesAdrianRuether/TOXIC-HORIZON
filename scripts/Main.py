@@ -7,29 +7,34 @@ from MovementEngine import *
 from UIEngine import *
 import Tutorial
 import Data
-global Daten
 
-Daten = Data.DatenManagement()
 
 monitor = arcade.get_display_size()
 SCREEN_WIDTH = monitor[0]
 SCREEN_HEIGHT = monitor[1]
 
 
+
 class MenuView(arcade.View):
     def __init__(self, currently_in_game):
         super().__init__()
+        self.Daten = Data.DatenManagement()
         self.window.set_mouse_visible(True)
         self.loading_success = currently_in_game
         self.manager = gui.UIManager()
         self.background_color = arcade.color.BLACK
+        self.currently_in_game = currently_in_game
         
+
+    def on_update(self, delta_time):
         v_box = gui.UIBoxLayout(space_between=20)
-        if currently_in_game == False:
+        if self.loading_success == False:
+            start_btn = gui.UIFlatButton(text="NEU", width=200)
+        if self.currently_in_game == False and self.loading_success:
             start_btn = gui.UIFlatButton(text="START", width=200)
-        else:
+        if self.currently_in_game:
             start_btn = gui.UIFlatButton(text="WEITER", width=200)
-        new_btn = gui.UIFlatButton(text="NEU", width=200)
+
         load_btn = gui.UIFlatButton(text="LADEN", width=200)
         save_btn = gui.UIFlatButton(text="SPEICHERN", width=200)
         tut_btn = gui.UIFlatButton(text="TUTORIAL", width=200)
@@ -40,13 +45,13 @@ class MenuView(arcade.View):
         def on_click_start(event):
             if self.loading_success:
                 arcade.schedule(lambda dt: self.window.show_view(LobbyView()), 0)
-        @new_btn.event('on_click')
-        def on_click_new(event):
-            arcade.schedule(lambda dt: self.window.show_view(NewGameView()), 0)
+            else:
+                arcade.schedule(lambda dt: self.window.show_view(NewGameView()), 0)
+
         @load_btn.event('on_click')
         def on_click_load(event):
             self.window.set_visible(False)
-            self.loading_success = Daten.laden()
+            self.loading_success = self.Daten.laden()
             self.window.set_visible(True)
         @tut_btn.event('on_click')
         def on_click_exit(event):
@@ -60,10 +65,10 @@ class MenuView(arcade.View):
         @save_btn.event('on_click')
         def on_click_exit(event):
             self.window.set_visible(False)
-            Daten.speichern()
+            self.Daten.speichern()
             self.window.set_visible(True)
         v_box.add(start_btn)
-        v_box.add(new_btn)
+
         v_box.add(load_btn)
         v_box.add(save_btn)
         v_box.add(tut_btn)
@@ -93,6 +98,7 @@ class MenuView(arcade.View):
 class NewGameView(arcade.View):
     def __init__(self):
         super().__init__()
+        self.Daten = Data.DatenManagement()
         self.window.set_mouse_visible(True)
         self._username = ""
         self.text_title = arcade.Text("Benennen Sie Ihren Charakter", self.window.width // 2, self.window.height // 2 + 300, arcade.color.WHITE, 30, anchor_x="center")
@@ -111,21 +117,25 @@ class NewGameView(arcade.View):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.BACKSPACE: self._username = self._username[:-1]
         elif key == arcade.key.ENTER:
-            Daten.set_data("Username", self._username)
-            Daten.set_data("Health", 100)
-            Daten.autosave()
+            self.Daten.set_data("Username", self._username)
+            self.Daten.set_data("Health", 100)
+            self.Daten.autosave()
             arcade.schedule(lambda dt: self.window.show_view(LobbyView()), 0)
-
 
 class GameView(arcade.View):
     def __init__(self):
         super().__init__()
-        Daten.autosave()
+        self.Daten = Data.DatenManagement()
+        self.Daten.autosave()
+        self.setup()
+
+
+    def setup(self):
         map_pfad = "maps/Map1.tmx"
         self.window.set_mouse_visible(False)
         self.crosshair = arcade.Sprite("sprites/crosshair.png")
         self.sound_music = arcade.Sound("sounds/gamemusic.mp3")
-        arcade.play_sound(self.sound_music, loop=True, volume=int(Daten.get_one_data("MusicVolume")))
+        #arcade.play_sound(self.sound_music, loop=True, volume=int(Daten.get_one_data("MusicVolume")))
 
         self.tilemap = arcade.load_tilemap(map_pfad, scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
 
@@ -160,19 +170,20 @@ class GameView(arcade.View):
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
-        self.GameMovementEngine = MovementEngine(self.scene, self.camera, self.window, Daten)
-        self.GameUIEngine = UIEngine(self.window, Daten)
+        self.GameMovementEngine = MovementEngine(self.scene, self.camera, self.window, self.Daten)
+        self.GameUIEngine = UIEngine(self.window, self.Daten)
         self.GameMovementEngine.spawn_enemys()
+        self.playerisdead = False
         
 
         self.dash_x, self.dash_y = 0, 0
         self.dash_decay, self.dash_cooldown = 1.2, 1.5
         self.keys_down = set()
-        self.text_username = arcade.Text(Daten.get_one_data("Username"), 0, 0, arcade.color.WHITE, 15, anchor_x="center")
+        self.text_username = arcade.Text(self.Daten.get_one_data("Username"), 0, 0, arcade.color.WHITE, 15, anchor_x="center")
 
         self.interactiontiles = self.scene["interactions"]
         self.button_e_sprite = arcade.Sprite("sprites/EButton.png")
-        Daten.set_data("Health", 100)
+        self.Daten.set_data("Health", 100)
         self.GameUIEngine.minimap_setup()
 
         self.show_console = False
@@ -181,6 +192,7 @@ class GameView(arcade.View):
 
     def on_draw(self):
         self.clear()
+
         self.camera.use()
         self.scene.draw()
 
@@ -204,24 +216,25 @@ class GameView(arcade.View):
         arcade.draw_sprite(self.crosshair, pixelated=True)
 
         self.GameUIEngine.Game_draw_UI(self.GameMovementEngine, self.dash_cooldown)
- 
+
         if arcade.key.F3 in self.keys_down:
             self.GameUIEngine.draw_debug()
         
         if time.monotonic() % 20 == 0:
-            Daten.autosave()
+            self.Daten.autosave()
 
         if self.playerisdead:
-            Daten.autosave()    
+            self.Daten.autosave()    
             arcade.schedule(lambda dt: self.window.show_view(GameOver()), 0)
 
         # immer als letztes!
         if self.show_console:
             self.GameUIEngine.draw_console(self.consoletext)
+        self.GameUIEngine.draw_help()
         
 
     def on_update(self, delta_time):
-        if not self.show_console:
+        if not self.show_console and not self.GameUIEngine.show_help:
             self.GameUIEngine.run_cycle()
             self.GameUIEngine.Game_update_UI()
             self.GameMovementEngine.run_enemy_movement(self.Player_sprite)
@@ -233,10 +246,10 @@ class GameView(arcade.View):
             )
             self.text_username.x = self.Player_sprite.center_x
             self.text_username.y = self.Player_sprite.center_y + 55
-            self.text_username.text = Daten.get_one_data("Username")
+            self.text_username.text = self.Daten.get_one_data("Username")
             self.update_player_animation(delta_time)
 
-        
+            
 
 
     def update_player_animation(self, delta_time):
@@ -320,6 +333,7 @@ class GameView(arcade.View):
 class LobbyView(arcade.View):
     def __init__(self):
         super().__init__()
+        self.Daten = Data.DatenManagement()
         self.window.set_mouse_visible(True)
         self.tilemap = arcade.load_tilemap("maps/LobbyMap.tmx", scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
@@ -355,19 +369,19 @@ class LobbyView(arcade.View):
 
         self.camera = arcade.Camera2D()
         self.gui_camera = arcade.Camera2D()
-        self.LobbyMovementEngine = MovementEngine(self.scene, self.camera, self.window, Daten)
-        self.LobbyUIEngine = UIEngine(self.window, Daten)
+        self.LobbyMovementEngine = MovementEngine(self.scene, self.camera, self.window, self.Daten)
+        self.LobbyUIEngine = UIEngine(self.window, self.Daten)
         self.keys_down = set()
         self.dash_x, self.dash_y = 0, 0
         self.dash_decay, self.dash_cooldown = 1.2, 1.2
         self.shop_is_entered = False
         self.interactiontiles = self.scene["interactions"]
-        self.text_username = arcade.Text(Daten.get_one_data("Username"), 0, 0, arcade.color.WHITE, 15, anchor_x="center")
+        self.text_username = arcade.Text(self.Daten.get_one_data("Username"), 0, 0, arcade.color.WHITE, 15, anchor_x="center")
         self.show_console = False
         self.consoletext = ''
 
     def on_show_view(self):
-        Daten.autosave()
+        self.Daten.autosave()
 
     def on_draw(self):
         self.clear()
@@ -397,15 +411,16 @@ class LobbyView(arcade.View):
         # immer als letztes!
         if self.show_console:
             self.LobbyUIEngine.draw_console(self.consoletext)
+        self.LobbyUIEngine.draw_help()
 
     def on_update(self, delta_time):
-        if not self.show_console:
+        if not self.show_console and not self.shop_is_entered and not self.LobbyUIEngine.show_help:
             self.dash_x, self.dash_y = self.LobbyMovementEngine.player_movement(self.Player_sprite, self.keys_down, self.dash_x, self.dash_y, self.dash_decay, delta_time)
             self.LobbyUIEngine.run_cycle()
             self.LobbyUIEngine.Game_update_UI()
             self.text_username.x, self.text_username.y = self.Player_sprite.center_x, self.Player_sprite.center_y + 55
             self.update_player_animation(delta_time)
-            self.text_username.text = Daten.get_one_data("Username")
+            self.text_username.text = self.Daten.get_one_data("Username")
         
     def update_player_animation(self, delta_time):
         # Bewegung prüfen
@@ -456,7 +471,7 @@ class LobbyView(arcade.View):
                 if itype == "shop" and symbol == arcade.key.E:
                     self.shop_is_entered = True
                 elif itype == "startgame" and symbol == arcade.key.E:
-                    arcade.schedule(lambda dt: Daten.change_data("Levelnumber", 1), 0)
+                    arcade.schedule(lambda dt: self.Daten.change_data("Levelnumber", 1), 0)
                     arcade.schedule(lambda dt: self.window.show_view(GameView()), 0)
 
         if symbol == arcade.key.ESCAPE and self.shop_is_entered == False:
@@ -485,11 +500,12 @@ class LobbyView(arcade.View):
 class GameOver(arcade.View):
     def __init__(self):
         super().__init__()
+        self.Daten = Data.DatenManagement()
         self.window.set_mouse_visible(True)
         self.loading_success = False
         self.manager = gui.UIManager()
         self.text_dead = arcade.Text("Werden gestorben haben.", self.window.width//2, self.window.height//1.5, arcade.color.WHITE, 42, anchor_x="center")
-        self.text_level = arcade.Text(f"Level: {Daten.get_one_data("Levelnumber")}", self.window.width//2, self.window.height//1.6, arcade.color.WHITE, 20, anchor_x="center")
+        self.text_level = arcade.Text(f"Level: {self.Daten.get_one_data("Levelnumber")}", self.window.width//2, self.window.height//1.6, arcade.color.WHITE, 20, anchor_x="center")
         
         # UI Buttons (Simplified for readability)
         v_box = gui.UIBoxLayout(space_between=20)
@@ -501,9 +517,9 @@ class GameOver(arcade.View):
             arcade.schedule(lambda dt: self.window.show_view(NewGameView()), 0)
         @again_btn.event('on_click')
         def on_click_new(event):
-            Schrott = Daten.get_one_data('Schrott')
+            Schrott = self.Daten.get_one_data('Schrott')
             NewSchrott = Schrott * 0.66
-            Daten.set_data('Schrott', NewSchrott)
+            self.Daten.set_data('Schrott', NewSchrott)
 
             arcade.schedule(lambda dt: self.window.show_view(LobbyView()), 0)
         @exit_btn.event('on_click')
@@ -538,6 +554,7 @@ class GameOver(arcade.View):
 class StartUp(arcade.View):
     def __init__(self):
         super().__init__()
+        self.Daten = Data.DatenManagement()
         self.window.set_mouse_visible(False)
         self.woosh = arcade.Sound("sounds/woosh.ogg")
         self.background_color = arcade.color.BLACK
@@ -546,19 +563,21 @@ class StartUp(arcade.View):
         self.sprite_background.position = (self.window.width//2, self.window.height//2.25)
         self.sprite_background.scale = 2
         self.start = time.monotonic()
-        arcade.play_sound(self.woosh, volume=int(Daten.get_one_data("SoundVolume")), speed=0.5)
+        arcade.play_sound(self.woosh, volume=int(self.Daten.get_one_data("SoundVolume")), speed=0.5)
 
     def on_draw(self):
         self.clear()
         self.text_studio.draw()
-        if time.monotonic() - self.start >= 4:
+        if time.monotonic() - self.start >= 3:
             arcade.draw_sprite(self.sprite_background)
-        if time.monotonic() - self.start >= 8:
+        if time.monotonic() - self.start >= 6:
             self.window.show_view(MenuView(currently_in_game = False))
    
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.SPACE:
             self.window.show_view(GameView())
+
+
 
 def main():
     arcade.enable_timings()
