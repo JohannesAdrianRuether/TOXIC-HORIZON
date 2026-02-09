@@ -171,6 +171,8 @@ class UIEngine():
                 except ValueError:
                     if command[2] == "default":
                         MovementEngine.overwrite_playerspeed = None
+                        
+        self.Daten.autosave()
 
 
 

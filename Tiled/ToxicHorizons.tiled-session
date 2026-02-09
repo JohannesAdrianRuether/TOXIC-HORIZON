@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "D:/Toxic-Horizons/maps/BaseMap.tmx",
+    "activeFile": "BasicTileset.tsx",
     "expandedProjectPaths": [
         "."
     ],
@@ -126,6 +126,7 @@
             }
         },
         "Objects.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 0.125,
             "scaleInEditor": 1
         }
@@ -143,17 +144,14 @@
     "openFiles": [
         "BasicTileset.tsx",
         "EnemyPaths.tsx",
-        "Objects.tsx",
-        "D:/Toxic-Horizons/maps/BaseMap.tmx",
-        "D:/Toxic-Horizons/maps/LobbyMap.tmx",
-        "D:/Toxic-Horizons/maps/TutorialMap.tmx"
+        "Objects.tsx"
     ],
     "project": "ToxicHorizons.tiled-project",
     "recentFiles": [
-        "D:/Toxic-Horizons/maps/BaseMap.tmx",
-        "BasicTileset.tsx",
-        "EnemyPaths.tsx",
         "Objects.tsx",
+        "EnemyPaths.tsx",
+        "BasicTileset.tsx",
+        "D:/Toxic-Horizons/maps/BaseMap.tmx",
         "D:/Toxic-Horizons/maps/TutorialMap.tmx",
         "D:/Toxic-Horizons/maps/LobbyMap.tmx",
         "F:/Meine Ablage/Toxic-Horizons/maps/BaseMap.tmx",

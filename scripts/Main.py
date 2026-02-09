@@ -103,7 +103,7 @@ class NewGameView(arcade.View):
         self._username = ""
         self.text_title = arcade.Text("Benennen Sie Ihren Charakter", self.window.width // 2, self.window.height // 2 + 300, arcade.color.WHITE, 30, anchor_x="center")
         self.Player_sprite = arcade.Sprite("sprites/player/walk_right_1.png")
-        self.Player_sprite.scale = 4
+        self.Player_sprite.scale = 2
 
     def on_draw(self):
         self.clear()
@@ -112,7 +112,7 @@ class NewGameView(arcade.View):
         self.Player_sprite.center_x, self.Player_sprite.center_y = self.window.width // 2, self.window.height // 2
         arcade.draw_sprite(self.Player_sprite, pixelated=True)
 
-    def on_text(self, text):
+    def on_text(self, text : str):
         if text.isprintable() and len(self._username) < 20: self._username += text
     def on_key_press(self, key, modifiers):
         if key == arcade.key.BACKSPACE: self._username = self._username[:-1]
@@ -127,11 +127,12 @@ class GameView(arcade.View):
         super().__init__()
         self.Daten = Data.DatenManagement()
         self.Daten.autosave()
+        self.map_list = ["maps/Map1.tmx"]
         self.setup()
 
 
     def setup(self):
-        map_pfad = "maps/Map1.tmx"
+        map_pfad = random.choice(self.map_list)
         self.window.set_mouse_visible(False)
         self.crosshair = arcade.Sprite("sprites/crosshair.png")
         self.sound_music = arcade.Sound("sounds/gamemusic.mp3")
@@ -142,18 +143,18 @@ class GameView(arcade.View):
         
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
         self.Player_sprite = arcade.Sprite()
-        self.Player_sprite.scale = 2
+        self.Player_sprite.scale = 0.5
 
         self.player_walk_right = [
             arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture("sprites/player/walk_right_2.png"),
+            arcade.load_texture("sprites/player/walk_right_3.png"),
         ]
 
         self.player_walk_left = [
             arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture("sprites/player/walk_left_2.png"),
+            arcade.load_texture("sprites/player/walk_left_3.png"),
         ]
 
         self.player_anim_timer = 0
@@ -253,40 +254,31 @@ class GameView(arcade.View):
 
 
     def update_player_animation(self, delta_time):
-        # Bewegung prüfen
-        moving = (
-            arcade.key.W in self.keys_down or
-            arcade.key.A in self.keys_down or
-            arcade.key.S in self.keys_down or
-            arcade.key.D in self.keys_down or
-            self.dash_x != 0 or self.dash_y != 0
-        )
+        # Check for movement
+        moving = any(k in self.keys_down for k in [arcade.key.W, arcade.key.A, arcade.key.S, arcade.key.D]) or \
+                self.dash_x != 0 or self.dash_y != 0
 
-        # Richtung bestimmen
+        # Update direction based on input
         if arcade.key.A in self.keys_down:
             self.player_facing = "left"
         elif arcade.key.D in self.keys_down:
             self.player_facing = "right"
 
-        # Wenn nicht in Bewegung → keine Animation
-        if not moving:
-            return
-
-        # Timer
-        self.player_anim_timer += delta_time
-        if self.player_anim_timer < 0.12:
-            return
-        self.player_anim_timer = 0
-
-        # Frames auswählen
+        # Determine which frame set to use
         frames = self.player_walk_right if self.player_facing == "right" else self.player_walk_left
 
-        # Frame wechseln
-        self.player_anim_index = (self.player_anim_index + 1) % len(frames)
-        self.Player_sprite.texture = frames[self.player_anim_index]
+        if not moving:
+            # Reset to standing frame when not moving
+            self.player_anim_index = 0
+            self.Player_sprite.texture = frames[0]
+            return
 
-        
-        
+        # Update timer
+        self.player_anim_timer += delta_time
+        if self.player_anim_timer >= 0.12: # Adjust this for animation speed
+            self.player_anim_timer = 0
+            self.player_anim_index = (self.player_anim_index + 1) % len(frames)
+            self.Player_sprite.texture = frames[self.player_anim_index]
             
 
     def on_key_press(self, symbol, modifiers):
@@ -338,19 +330,19 @@ class LobbyView(arcade.View):
         self.tilemap = arcade.load_tilemap("maps/LobbyMap.tmx", scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
         self.Player_sprite = arcade.Sprite()
-        self.Player_sprite.scale = 2
+        self.Player_sprite.scale = 0.5
 
         # Walk only
         self.player_walk_right = [
             arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture("sprites/player/walk_right_2.png"),
+            arcade.load_texture("sprites/player/walk_right_3.png"),
         ]
 
         self.player_walk_left = [
             arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture("sprites/player/walk_left_2.png"),
+            arcade.load_texture("sprites/player/walk_left_3.png"),
         ]
 
         self.player_anim_timer = 0
@@ -419,8 +411,8 @@ class LobbyView(arcade.View):
             self.LobbyUIEngine.run_cycle()
             self.LobbyUIEngine.Game_update_UI()
             self.text_username.x, self.text_username.y = self.Player_sprite.center_x, self.Player_sprite.center_y + 55
-            self.update_player_animation(delta_time)
             self.text_username.text = self.Daten.get_one_data("Username")
+            self.update_player_animation(delta_time)
         
     def update_player_animation(self, delta_time):
         # Bewegung prüfen

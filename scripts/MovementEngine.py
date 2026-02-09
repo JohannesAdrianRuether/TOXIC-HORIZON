@@ -335,23 +335,18 @@ class MovementEngine():
     def update_enemy_animation(self, sprite, delta_time):
         sprite.animation_timer += delta_time
 
-        if sprite.animation_timer >= 0.12:   # ≈ 8 FPS
+        if sprite.animation_timer >= 0.12:
             sprite.animation_timer = 0
             sprite.current_texture = (sprite.current_texture + 1) % len(sprite.textures)
             sprite.texture = sprite.textures[sprite.current_texture]
 
     def kill_all_enemys(self):
-        for enemy in self.following_Enemy_sprite_list:
+        for enemy in list(self.following_Enemy_sprite_list):
             self.enemy_death(enemy)
-        for enemy in self.path_Enemy_sprite_list:
+        for enemy in list(self.path_Enemy_sprite_list):
             self.enemy_death(enemy)
-        for enemy in self.abandon_path_list:
+        for enemy in list(self.retourning_list):
             self.enemy_death(enemy)
-        for enemy in self.retourning_list:
-            self.enemy_death(enemy)
-
-
-
 
 
     def all_collision_checks(self, player):
