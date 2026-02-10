@@ -98,6 +98,14 @@
                 "y": 1191.3333333333333
             }
         },
+        "F:/Meine Ablage/TOXIC-HORIZON/maps/TutorialMap.tmx": {
+            "scale": 0.63234375,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 959.9209290832716,
+                "y": 350.2841611069928
+            }
+        },
         "F:/Meine Ablage/Toxic-Horizons/maps/BaseMap.tmx": {
             "scale": 1,
             "selectedLayer": 1,
@@ -148,7 +156,7 @@
         }
     },
     "last.externalTilesetPath": "F:/Meine Ablage/Toxic-Horizons/Tiled",
-    "last.imagePath": "F:/Meine Ablage/Toxic-Horizons/sprites/objects",
+    "last.imagePath": "F:/Meine Ablage/TOXIC-HORIZON/sprites",
     "last.worldFilePath": "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/maps",
     "loadedWorlds": [
         "C:/Users/JohannesARuether/Desktop/TOXIC HORIZONS/maps/World.world"

@@ -12,7 +12,7 @@ class Tutorial(arcade.View):
         self.tilemap = arcade.load_tilemap("maps/TutorialMap.tmx", scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
         self.Player_sprite = arcade.Sprite()
-        self.Player_sprite.scale = 2
+        self.Player_sprite.scale = 0.5
 
         # Walk only
         self.player_walk_right = [
@@ -112,7 +112,7 @@ class Tutorial(arcade.View):
         self.camera.use()
         self.scene.draw()
  
-        if self.phase >= 7:
+        if self.phase >= 8:
             self.GameUIEngine.Game_draw_enemy_health(self.GameMovementEngine)
             self.GameMovementEngine.draw_enemys()
 
@@ -151,11 +151,11 @@ class Tutorial(arcade.View):
     def on_update(self, delta_time):
         self.GameUIEngine.run_cycle()
         self.GameUIEngine.Game_update_UI()
-        if self.phase >= 7:
+        if self.phase >= 8:
             self.GameMovementEngine.run_enemy_movement(self.Player_sprite)
         self.playerisdead = self.GameMovementEngine.all_collision_checks(self.Player_sprite)
         
-        if self.phase >= 6:
+        if self.phase >= 7:
             self.dash_x, self.dash_y = self.GameMovementEngine.player_movement(
                 self.Player_sprite, self.keys_down,
                 self.dash_x, self.dash_y, self.dash_decay, delta_time
