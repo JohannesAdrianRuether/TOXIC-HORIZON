@@ -112,7 +112,11 @@ class MovementEngine():
             self.path_Enemy_sprite_list = arcade.SpriteList()
             self.path_enemy_speed = 5
 
-            for i in range(2):
+            spawner = self.scene["spawns"]
+            FollowEnemySpawner = [s for s in spawner if s.properties.get("spawn") == 'enemy1']
+            PathEnemySpawnerONE = [s for s in spawner if s.properties.get("spawn") == 'enemy2']
+
+            for i in range(len(FollowEnemySpawner)):
                 enemy = arcade.Sprite()
                 enemy.scale = 3
 
@@ -137,7 +141,7 @@ class MovementEngine():
                 self.following_Enemy_sprite_list.append(enemy)
 
 
-            for i in range(8):
+            for i in range(len(PathEnemySpawnerONE)):
                 enemy = arcade.Sprite()
                 enemy.scale = 2
 
@@ -162,9 +166,7 @@ class MovementEngine():
 
                 self.path_Enemy_sprite_list.append(enemy)
             
-            spawner = self.scene["spawns"]
-            FollowEnemySpawner = [s for s in spawner if s.properties.get("spawn") == 'enemy1']
-            PathEnemySpawnerONE = [s for s in spawner if s.properties.get("spawn") == 'enemy2']
+            
 
             for enemy in self.following_Enemy_sprite_list:
                 spawn = FollowEnemySpawner.pop()

@@ -82,6 +82,22 @@
             "scaleInDock": 1,
             "scaleInEditor": 4
         },
+        "F:/Meine Ablage/TOXIC-HORIZON/maps/Map1.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 1240,
+                "y": 869
+            }
+        },
+        "F:/Meine Ablage/TOXIC-HORIZON/maps/MapNele.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 916,
+                "y": 453
+            }
+        },
         "F:/Meine Ablage/Toxic-Horizons/maps/BaseMap.tmx": {
             "scale": 1,
             "selectedLayer": 1,

@@ -127,7 +127,7 @@ class GameView(arcade.View):
         super().__init__()
         self.Daten = Data.DatenManagement()
         self.Daten.autosave()
-        self.map_list = ["maps/Map1.tmx"]
+        self.map_list = ["maps/Map1.tmx", "maps/MapNele.tmx"]
         self.setup()
 
 
