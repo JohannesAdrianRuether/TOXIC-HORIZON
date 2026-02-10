@@ -91,11 +91,11 @@
             }
         },
         "F:/Meine Ablage/TOXIC-HORIZON/maps/MapNele.tmx": {
-            "scale": 0.5,
-            "selectedLayer": 4,
+            "scale": 0.75,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 916,
-                "y": 453
+                "x": 1380,
+                "y": 1191.3333333333333
             }
         },
         "F:/Meine Ablage/Toxic-Horizons/maps/BaseMap.tmx": {

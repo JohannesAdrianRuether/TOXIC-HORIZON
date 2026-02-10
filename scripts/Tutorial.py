@@ -148,9 +148,6 @@ class Tutorial(arcade.View):
             Daten.autosave()    
             arcade.schedule(lambda dt: self.window.show_view(GameOver()), 0)
 
-
-        
-
     def on_update(self, delta_time):
         self.GameUIEngine.run_cycle()
         self.GameUIEngine.Game_update_UI()
