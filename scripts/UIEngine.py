@@ -9,7 +9,9 @@ from path_utils import asset_path
 
 
 class UIEngine():
+    """Encapsulates all game UI rendering, console commands, and shop widgets."""
     def __init__(self, window, Daten):
+        """Create persistent HUD sprites/text and initialize UI runtime state."""
         self.window = window
         self.all_flashing_cycles = [100, "UP"]
         self.shop_manager = gui.UIManager()
@@ -50,6 +52,7 @@ class UIEngine():
         self.show_help = False
 
     def run_cycle(self):
+        """Run shared alpha pulse cycle used by several flashing UI elements."""
         if self.all_flashing_cycles[1] == "UP":
             self.all_flashing_cycles[0] += 5
             if self.all_flashing_cycles[0] >= 255:
@@ -60,9 +63,11 @@ class UIEngine():
                 self.all_flashing_cycles[1] = "UP"
         
     def get_cycle(self):
+        """Return current cycle alpha value."""
         return self.all_flashing_cycles[0]
     
     def Game_draw_UI(self, movement_engine, dash_cooldown):
+        """Draw base HUD (HP, scrap, dash status, minimap frame)."""
         self.text_HP.draw()
         self.text_Schrott.draw()
 
@@ -86,10 +91,12 @@ class UIEngine():
             arcade.draw_lbwh_rectangle_outline(0, self.window.height-self.minimap_height,self.minimap_width,self.minimap_height, arcade.color.WHITE, 2)
     
     def draw_debug(self):
+        """Draw debug overlays (time and FPS)."""
         self.debugtext_TIME.draw()
         self.debugtext_fps.draw()
 
     def draw_console(self, text):
+        """Draw in-game console box with current input and usage hint."""
         arcade.draw_lbwh_rectangle_filled(0, 0, 300, 50, arcade.color.WHITE)
         self.text_console.text = text
         self.text_console.draw()
@@ -97,6 +104,7 @@ class UIEngine():
 
 
     def draw_help(self):
+        """Draw temporary command help overlay for a fixed duration."""
         if self.show_help:
             # Prüfen, ob z.B. 5 Sekunden vergangen sind
             if time.monotonic() - self.help_time < 5.0:
@@ -121,6 +129,7 @@ class UIEngine():
                 self.show_help = False # Timer abgelaufen
 
     def run_console(self, text, MovementEngine):
+        """Parse and execute slash commands, then autosave resulting state."""
         # Entferne führenden Slash, falls vorhanden
         if text.startswith("/"):
             text = text[1:]
@@ -178,6 +187,7 @@ class UIEngine():
 
 
     def update_minimap(self, tilemap, scene, player, path_enemys, follow_enemys, interactiontiles):
+        """Render minimap texture by drawing scene + entities into atlas FBO."""
         
         map_width  = tilemap.width * tilemap.tile_width * tilemap.scaling
         map_height = tilemap.height * tilemap.tile_height * tilemap.scaling
@@ -205,6 +215,7 @@ class UIEngine():
                 arcade.draw_lbwh_rectangle_filled(interaction.center_x-interaction.width//2,interaction.center_y-interaction.height//2,interaction.width, interaction.height, arcade.color.GREEN)
 
     def minimap_setup(self):
+        """Create minimap texture sprite and sprite list container."""
         # --- Minimap Setup ---
         self.minimap_width = 256
         self.minimap_height = 256
@@ -226,6 +237,7 @@ class UIEngine():
         self.minimap_sprite_list.append(self.minimap_sprite)
 
     def Game_draw_enemy_health(self, Movementengine):
+        """Draw health bars over all enemy types with color by HP percent."""
 
         def health_to_color(health):
                 if health >= 80:
@@ -254,6 +266,7 @@ class UIEngine():
             arcade.draw_lbwh_rectangle_filled(enemy.center_x - 50, enemy.center_y + 50, health_in_prozent, 5, health_to_color(health_in_prozent))
 
     def Game_update_UI(self):
+        """Refresh dynamic HUD text and icon positions from current game state."""
         
         self.text_HP.text = f"HP: {self.Daten.get_one_data('Health')}"
         self.text_Schrott.text = f"Schrott: {int(self.Daten.get_one_data('Schrott'))}"
@@ -276,6 +289,7 @@ class UIEngine():
         self.heart_sprite.center_y = self.text_HP.position[1] + 10
 
     def shop(self):
+        """Draw and update the complete shop interface each frame."""
         self.shop_init()
         # Panels zeichnen
         arcade.draw_lbwh_rectangle_filled(self.left_x, self.left_y, self.left_w, self.left_h, arcade.color.WHITE_SMOKE)
@@ -291,6 +305,7 @@ class UIEngine():
         arcade.draw_sprite(self.weapon_sprite)
 
     def shop_init(self):
+        """Initialize shop controls, compute layouts, and prepare offer preview."""
         # Shop Buttons
         self.left_button = gui.UIFlatButton(text="Waffe verbessern", width=200, height=60)
         self.right_button = gui.UIFlatButton(text="Ult verbessern", width=200, height=60)
