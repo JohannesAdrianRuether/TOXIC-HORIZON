@@ -1,8 +1,8 @@
 {
     "Username": "",
-    "Health": 100,
+    "Health": 0.0,
     "Ultpoints": 0,
-    "Schrott": 0,
+    "Schrott": 60,
     "CurrentUlt": null,
     "Levelnumber": 0,
     "EnemyDevelopement": 5,

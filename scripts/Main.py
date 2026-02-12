@@ -7,7 +7,7 @@ from MovementEngine import *
 from UIEngine import *
 import Tutorial
 import Data
-from LoadingScreen import *
+import LoadingScreen
 
 
 monitor = arcade.get_display_size()
@@ -127,8 +127,7 @@ class GameView(arcade.View):
     def __init__(self, GameDict):
         super().__init__()
         self.__dict__.update(GameDict)
-      
-
+        
 
     def on_draw(self):
         self.clear()
@@ -311,7 +310,7 @@ class LobbyView(arcade.View):
         self.show_console = False
         self.consoletext = ''
 
-        loader = LoadingScreen()
+        loader = LoadingScreen.LoadingScreen()
         loader = loader.load_GameView()
         self.GameDict = loader.__dict__
 
