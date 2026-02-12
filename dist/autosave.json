@@ -1,0 +1,17 @@
+{
+    "Username": "",
+    "Health": 100,
+    "Ultpoints": 0,
+    "Schrott": 0,
+    "CurrentUlt": null,
+    "Levelnumber": 0,
+    "EnemyDevelopement": 5,
+    "CurrentWeapon": "1.1",
+    "MusicVolume": 1,
+    "SoundVolume": 1,
+    "PreviousCommands": [],
+    "Maplist": [
+        "C:\\Users\\JOHANN~1\\AppData\\Local\\Temp\\_MEI18882\\assets\\maps\\Map1.tmx",
+        "C:\\Users\\JOHANN~1\\AppData\\Local\\Temp\\_MEI18882\\assets\\maps\\MapNele.tmx"
+    ]
+}

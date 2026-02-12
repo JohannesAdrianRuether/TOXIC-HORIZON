@@ -2,6 +2,7 @@ import arcade
 from Main import *
 import time
 import Data
+from path_utils import asset_path
 Daten = Data.DatenManagement()
 
 class Tutorial(arcade.View):
@@ -9,22 +10,22 @@ class Tutorial(arcade.View):
         super().__init__()
         Daten.autosave()
         Daten.set_data("Username", "Überlebender")
-        self.tilemap = arcade.load_tilemap("maps/TutorialMap.tmx", scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
+        self.tilemap = arcade.load_tilemap(asset_path("assets/maps/TutorialMap.tmx"), scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
         self.Player_sprite = arcade.Sprite()
         self.Player_sprite.scale = 0.5
 
         # Walk only
         self.player_walk_right = [
-            arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_1.png"),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_1.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_1.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_1.png")),
         ]
 
         self.player_walk_left = [
-            arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_1.png"),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_1.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_1.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_1.png")),
         ]
 
         self.player_anim_timer = 0
@@ -52,7 +53,7 @@ class Tutorial(arcade.View):
         self.text_username = arcade.Text(Daten.get_one_data("Username"), 0, 0, arcade.color.WHITE, 15, anchor_x="center")
 
         self.interactiontiles = self.scene["interactions"]
-        self.button_e_sprite = arcade.Sprite("sprites/EButton.png")
+        self.button_e_sprite = arcade.Sprite(asset_path("assets/sprites/EButton.png"))
 
         Daten.set_data("Health", 100)
         self.GameUIEngine.minimap_setup()
@@ -61,7 +62,7 @@ class Tutorial(arcade.View):
 
 
         self.text_weiter = arcade.Text("(ENTER für weiter)", self.window.width//2, 110, arcade.color.BLACK, 12, anchor_x="center", italic=True)
-        self.sprite_miro = arcade.Sprite("sprites/miro.png")
+        self.sprite_miro = arcade.Sprite(asset_path("assets/sprites/miro.png"))
         self.sprite_miro.scale = 6
         self.sprite_miro.right = self.window.width - 100
         self.sprite_miro.bottom = 0

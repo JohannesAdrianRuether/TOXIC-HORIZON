@@ -1,4 +1,5 @@
 import arcade, time, random, math
+from path_utils import asset_path
 
 class MovementEngine():
     def __init__(self, scene, camera, window, Daten):
@@ -13,8 +14,8 @@ class MovementEngine():
         self.abandon_path_list = arcade.SpriteList()
         self.retourning_list = arcade.SpriteList()
         self.player_is_dead = False
-        self.sound_shot = arcade.Sound("sounds/singleshot.mp3")
-        self.sound_walk = arcade.Sound("sounds/walk.mp3")
+        self.sound_shot = arcade.Sound(asset_path("assets/sounds/singleshot.mp3"))
+        self.sound_walk = arcade.Sound(asset_path("assets/sounds/walk.mp3"))
         self.walk_handle = None
         self.overwrite_damage = None
         self.overwrite_playerspeed = None
@@ -122,8 +123,8 @@ class MovementEngine():
 
                 # --- TEXTURES EINMAL LADEN ---
                 enemy.textures = [
-                    arcade.load_texture("sprites/enemy2/Drone1.png"),
-                    arcade.load_texture("sprites/enemy2/Drone2.png")
+                    arcade.load_texture(asset_path("assets/sprites/enemy2/Drone1.png")),
+                    arcade.load_texture(asset_path("assets/sprites/enemy2/Drone2.png"))
                 ]
 
                 enemy.current_texture = 0
@@ -147,10 +148,10 @@ class MovementEngine():
 
                 # --- TEXTURES EINMAL LADEN ---
                 enemy.textures = [
-                    arcade.load_texture("sprites/spider/spider1.png"),
-                    arcade.load_texture("sprites/spider/spider2.png"),
-                    arcade.load_texture("sprites/spider/spider3.png"),
-                    arcade.load_texture("sprites/spider/spider4.png"),
+                    arcade.load_texture(asset_path("assets/sprites/spider/spider1.png")),
+                    arcade.load_texture(asset_path("assets/sprites/spider/spider2.png")),
+                    arcade.load_texture(asset_path("assets/sprites/spider/spider3.png")),
+                    arcade.load_texture(asset_path("assets/sprites/spider/spider4.png")),
                 ]
 
                 enemy.current_texture = 0
@@ -396,7 +397,7 @@ class MovementEngine():
 
     def enemy_death(self, enemy):
         for i in range(3):
-            scrap = arcade.Sprite("sprites/scrap.png")
+            scrap = arcade.Sprite(asset_path("assets/sprites/scrap.png"))
             scrap.center_x = enemy.center_x + random.randint(0, 20)
             scrap.center_y = enemy.center_y + random.randint(0, 20)
             scrap.scale = 0.5
@@ -408,7 +409,7 @@ class MovementEngine():
         self.currentWeapon = self.Daten.get_one_data("CurrentWeapon")
         if (current_time - self.last_shoot_time) >= self.Daten.get_one_weapon_data(self.currentWeapon, "speed"):
             arcade.play_sound(self.sound_shot, volume=int(self.Daten.get_one_data("SoundVolume")), loop=False)
-            bullet = arcade.Sprite("sprites/bullet.png")
+            bullet = arcade.Sprite(asset_path("assets/sprites/bullet.png"))
             bullet.scale = 1.5
             bullet.position = self.player.position
             bullet.dx, bullet.dy = x - self.player.center_x, y - self.player.center_y

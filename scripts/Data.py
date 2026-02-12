@@ -1,6 +1,7 @@
 import json
 from tkinter import filedialog, messagebox
 import tkinter as tk
+from path_utils import asset_path
 
 class DatenManagement:
 
@@ -27,7 +28,7 @@ class DatenManagement:
             "MusicVolume" : 1,
             "SoundVolume" : 1,
             "PreviousCommands" : [],
-            'Maplist' : ["maps/Map1.tmx", "maps/MapNele.tmx"]
+            'Maplist' : [asset_path("assets/maps/Map1.tmx"), asset_path("assets/maps/MapNele.tmx")]
         }
 
         self.weapons = {

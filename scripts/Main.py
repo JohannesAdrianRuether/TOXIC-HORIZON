@@ -8,6 +8,7 @@ from UIEngine import *
 import Tutorial
 import Data
 import LoadingScreen
+from path_utils import asset_path
 
 
 monitor = arcade.get_display_size()
@@ -103,7 +104,7 @@ class NewGameView(arcade.View):
         self.window.set_mouse_visible(True)
         self._username = ""
         self.text_title = arcade.Text("Benennen Sie Ihren Charakter", self.window.width // 2, self.window.height // 2 + 300, arcade.color.WHITE, 30, anchor_x="center")
-        self.Player_sprite = arcade.Sprite("sprites/player/walk_right_1.png")
+        self.Player_sprite = arcade.Sprite(asset_path("assets/sprites/player/walk_right_1.png"))
         self.Player_sprite.scale = 2
 
     def on_draw(self):
@@ -265,22 +266,22 @@ class LobbyView(arcade.View):
         super().__init__()
         self.Daten = Data.DatenManagement()
         self.window.set_mouse_visible(True)
-        self.tilemap = arcade.load_tilemap("maps/LobbyMap.tmx", scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
+        self.tilemap = arcade.load_tilemap(asset_path("assets/maps/LobbyMap.tmx"), scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
         self.Player_sprite = arcade.Sprite()
         self.Player_sprite.scale = 0.5
 
         # Walk only
         self.player_walk_right = [
-            arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_2.png"),
-            arcade.load_texture("sprites/player/walk_right_3.png"),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_1.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_2.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_3.png")),
         ]
 
         self.player_walk_left = [
-            arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_2.png"),
-            arcade.load_texture("sprites/player/walk_left_3.png"),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_1.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_2.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_3.png")),
         ]
 
         self.player_anim_timer = 0
@@ -291,7 +292,7 @@ class LobbyView(arcade.View):
         self.Player_sprite.texture = self.player_walk_right[0]
 
 
-        self.button_e_sprite = arcade.Sprite("sprites/EButton.png")
+        self.button_e_sprite = arcade.Sprite(asset_path("assets/sprites/EButton.png"))
 
         for spawn in self.scene["spawns"]:
             if spawn.properties.get("spawn") == "player":
@@ -491,10 +492,10 @@ class StartUp(arcade.View):
         super().__init__()
         self.Daten = Data.DatenManagement()
         self.window.set_mouse_visible(False)
-        self.woosh = arcade.Sound("sounds/woosh.ogg")
+        self.woosh = arcade.Sound(asset_path("assets/sounds/woosh.ogg"))
         self.background_color = arcade.color.BLACK
         self.text_studio = arcade.Text("INSTINCT√9", self.window.width//2, self.window.height//2, arcade.color.WHITE, 124, anchor_x="center", anchor_y="center", bold=True, font_name="Liberation Mono")
-        self.sprite_background = arcade.Sprite("sprites/LOGO.png")
+        self.sprite_background = arcade.Sprite(asset_path("assets/sprites/LOGO.png"))
         self.sprite_background.position = (self.window.width//2, self.window.height//2.25)
         self.sprite_background.scale = 2
         self.start = time.monotonic()

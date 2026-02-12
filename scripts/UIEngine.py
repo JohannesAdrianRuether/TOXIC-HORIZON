@@ -2,6 +2,7 @@ import arcade
 from arcade import gui
 import time
 import tkinter
+from path_utils import asset_path
 
 
 
@@ -28,20 +29,20 @@ class UIEngine():
         self.debugtext_fps = arcade.Text("", self.window.width - 30, self.window.height - 40,
                                          arcade.color.WHITE, 15, anchor_x="right")
         
-        self.dash_sprite = arcade.Sprite("sprites/dash.png")
+        self.dash_sprite = arcade.Sprite(asset_path("assets/sprites/dash.png"))
         self.dash_sprite.center_x = self.window.width // 2
         self.dash_sprite.center_y = 30
         self.dash_sprite.scale = 0.2
         
         # Pre-load shop asset to save memory
-        self.miro_sprite = arcade.Sprite("sprites/miro.png")
+        self.miro_sprite = arcade.Sprite(asset_path("assets/sprites/miro.png"))
         self.miro_sprite.scale = 5
         self.miro_sprite.position = (self.window.width, self.window.height)
 
-        self.scrap_sprite = arcade.Sprite("sprites/scrap.png")
+        self.scrap_sprite = arcade.Sprite(asset_path("assets/sprites/scrap.png"))
         self.scrap_sprite.scale = 0.6
 
-        self.heart_sprite = arcade.Sprite("sprites/heart.png")
+        self.heart_sprite = arcade.Sprite(asset_path("assets/sprites/heart.png"))
         self.heart_sprite.scale = 1.8
 
         self.text_console = arcade.Text("", 10, 25, arcade.color.BLACK, 15, anchor_x="left", anchor_y="center")
@@ -293,7 +294,7 @@ class UIEngine():
         # Shop Buttons
         self.left_button = gui.UIFlatButton(text="Waffe verbessern", width=200, height=60)
         self.right_button = gui.UIFlatButton(text="Ult verbessern", width=200, height=60)
-        self.sound_weapon_upgrade = arcade.Sound("sounds/levelup.wav")
+        self.sound_weapon_upgrade = arcade.Sound(asset_path("assets/sounds/levelup.wav"))
         
         
 
@@ -363,7 +364,7 @@ class UIEngine():
 
 
         
-        self.weapon_sprite = arcade.Sprite(f"sprites/weapons/{self.Daten.get_one_weapon_data(NextWeapon, "sprite")}")
+        self.weapon_sprite = arcade.Sprite(asset_path(f"assets/sprites/weapons/{self.Daten.get_one_weapon_data(NextWeapon, 'sprite')}"))
         self.weapon_sprite.scale = 0.5
         self.weapon_sprite.center_x = self.left_panel_middle
         self.weapon_sprite.center_y = self.complete_height // 2 + 100

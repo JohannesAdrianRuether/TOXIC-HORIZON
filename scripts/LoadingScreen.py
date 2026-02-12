@@ -3,6 +3,7 @@ import random
 from MovementEngine import * 
 from UIEngine import *
 import Data
+from path_utils import asset_path
 
 class LoadingScreen(arcade.View):
     def __init__(self):
@@ -39,21 +40,21 @@ class LoadingScreen(arcade.View):
 
     def sprite_setup_GameView(self):
         self.window.set_mouse_visible(False)
-        self.crosshair = arcade.Sprite("sprites/crosshair.png")
+        self.crosshair = arcade.Sprite(asset_path("assets/sprites/crosshair.png"))
         self.Player_sprite = arcade.Sprite()
         self.Player_sprite.scale = 0.5
         self.player_walk_right = [
-            arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_2.png"),
-            arcade.load_texture("sprites/player/walk_right_3.png"),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_1.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_2.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_right_3.png")),
         ]
 
         self.player_walk_left = [
-            arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_2.png"),
-            arcade.load_texture("sprites/player/walk_left_3.png"),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_1.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_2.png")),
+            arcade.load_texture(asset_path("assets/sprites/player/walk_left_3.png")),
         ]
-        self.button_e_sprite = arcade.Sprite("sprites/EButton.png")
+        self.button_e_sprite = arcade.Sprite(asset_path("assets/sprites/EButton.png"))
 
         self.player_anim_timer = 0
         self.player_anim_index = 0
@@ -80,7 +81,7 @@ class LoadingScreen(arcade.View):
         self.GameUIEngine = UIEngine(self.window, self.Daten)
         self.GameUIEngine.minimap_setup()
         self.text_username = arcade.Text(self.Daten.get_one_data("Username"), 0, 0, arcade.color.WHITE, 15, anchor_x="center")
-        self.sound_music = arcade.Sound("sounds/gamemusic.mp3")
+        self.sound_music = arcade.Sound(asset_path("assets/sounds/gamemusic.mp3"))
         #arcade.play_sound(self.sound_music, loop=True, volume=int(Daten.get_one_data("MusicVolume")))
         self.interactiontiles = self.scene["interactions"]
         self.show_console = False

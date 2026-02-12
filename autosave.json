@@ -1,8 +1,8 @@
 {
     "Username": "",
-    "Health": 0.0,
+    "Health": 100,
     "Ultpoints": 0,
-    "Schrott": 60,
+    "Schrott": 0,
     "CurrentUlt": null,
     "Levelnumber": 0,
     "EnemyDevelopement": 5,
@@ -11,7 +11,7 @@
     "SoundVolume": 1,
     "PreviousCommands": [],
     "Maplist": [
-        "maps/Map1.tmx",
-        "maps/MapNele.tmx"
+        "assets/maps/Map1.tmx",
+        "assets/maps/MapNele.tmx"
     ]
 }
