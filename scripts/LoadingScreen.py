@@ -6,15 +6,19 @@ import Data
 from path_utils import asset_path
 
 class LoadingScreen(arcade.View):
+    """Prepares all expensive GameView objects in deterministic loading steps."""
     def __init__(self):
+        """Initialize progress indicator for staged loading."""
         super().__init__()
         self.loading_in_prozent = 0
 
     def on_draw(self):
+        """Render hook for loading screen (currently logs progress)."""
         self.clear()
         print(self.loading_in_prozent)
 
     def load_GameView(self):
+        """Run full setup pipeline and return self as container for prepared state."""
         self.daten_setup_GameView()
         self.loading_in_prozent += 20
         self.scene_setup_GameView()
@@ -29,16 +33,19 @@ class LoadingScreen(arcade.View):
 
 
     def scene_setup_GameView(self):
+        """Choose map and construct tilemap + scene graph."""
         map_pfad = random.choice(self.map_list)
         self.tilemap = arcade.load_tilemap(map_pfad, scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
         self.scene = arcade.Scene.from_tilemap(self.tilemap)
 
     def daten_setup_GameView(self):
+        """Create data manager, pull map list, and persist baseline state."""
         self.Daten = Data.DatenManagement()
         self.map_list = self.Daten.get_one_data("Maplist")
         self.Daten.autosave()
 
     def sprite_setup_GameView(self):
+        """Load crosshair/player textures and interaction indicator sprites."""
         self.window.set_mouse_visible(False)
         self.crosshair = arcade.Sprite(asset_path("assets/sprites/crosshair.png"))
         self.Player_sprite = arcade.Sprite()
@@ -64,6 +71,7 @@ class LoadingScreen(arcade.View):
         self.Player_sprite.texture = self.player_walk_right[0]
 
     def movement_setup_GameView(self):
+        """Initialize movement engine, spawn position, enemies, and control state."""
         self.camera = arcade.Camera2D()
         self.GameMovementEngine = MovementEngine(self.scene, self.camera, self.window, self.Daten)
         for spawn in self.scene["spawns"]:
@@ -77,6 +85,7 @@ class LoadingScreen(arcade.View):
         self.playerisdead = False
 
     def ui_setup_GameView(self):
+        """Initialize UI engine, minimap, username label, and music handle."""
         self.gui_camera = arcade.Camera2D()
         self.GameUIEngine = UIEngine(self.window, self.Daten)
         self.GameUIEngine.minimap_setup()

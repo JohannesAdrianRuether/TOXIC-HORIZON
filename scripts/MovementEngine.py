@@ -2,7 +2,9 @@ import arcade, time, random, math
 from path_utils import asset_path
 
 class MovementEngine():
+    """Handles player movement, enemy logic, bullets, collision checks, and drops."""
     def __init__(self, scene, camera, window, Daten):
+        """Store world references and initialize combat/movement runtime state."""
         self.scene = scene
         self.camera = camera
         self.last_dash_time = 0
@@ -22,6 +24,7 @@ class MovementEngine():
 
 
     def player_movement(self, player, keys_down, dash_x, dash_y, dash_decay, delta_time):
+        """Apply WASD movement + dash movement + walk sound state machine."""
         self.player = player
         if self.overwrite_playerspeed == None:
             speed = 300 * delta_time
@@ -85,6 +88,7 @@ class MovementEngine():
         return dash_x, dash_y
     
     def dash_is_possible(self, symbol, keys_down, dash_cooldown):
+        """Validate dash cooldown and return dash impulse vector if available."""
         current_time = time.monotonic()
         can_dash = (current_time - self.last_dash_time) >= dash_cooldown
 
@@ -107,6 +111,7 @@ class MovementEngine():
         return dash_x, dash_y, False
 
     def spawn_enemys(self):
+        """Spawn both follower and path enemies from map spawn markers."""
         if self.scene['spawns'] != None:
             self.following_Enemy_sprite_list = arcade.SpriteList()
             self.follow_enemy_speed = 4
@@ -178,6 +183,7 @@ class MovementEngine():
                 enemy.center_x, enemy.center_y = spawn.center_x, spawn.center_y
 
     def draw_enemys(self):
+        """Draw enemy lists, active bullets, scrap drops, and returning enemies."""
         self.following_Enemy_sprite_list.draw(pixelated=True)
         self.path_Enemy_sprite_list.draw(pixelated=True)
         self.bullet_sprite_list.draw(pixelated=True)
@@ -185,6 +191,7 @@ class MovementEngine():
         self.retourning_list.draw(pixelated=True)
 
     def _direction_to_vector(self, direction):
+        """Convert symbolic direction to unit vector used by path logic."""
         # Helper: direction string -> (vx, vy)
         if direction == "left": return -1, 0
         if direction == "right": return 1, 0
@@ -193,6 +200,7 @@ class MovementEngine():
         return 0, 0
 
     def run_enemy_movement(self, player):
+        """Advance follower/path/returning enemy behavior and projectile motion."""
         walls = self.scene["Walls"]
         paths = self.scene["enemypath"]
         aggro = 1
@@ -327,6 +335,7 @@ class MovementEngine():
                 scrap.center_y += (dy / d) * 15
 
     def update_enemy_rotation(self, sprite):
+        """Rotate enemy sprite to align with current movement vector."""
         dx = getattr(sprite, "change_x", 0)
         dy = getattr(sprite, "change_y", 0)
 
@@ -336,6 +345,7 @@ class MovementEngine():
 
     
     def update_enemy_animation(self, sprite, delta_time):
+        """Cycle enemy textures using a fixed animation timer."""
         sprite.animation_timer += delta_time
 
         if sprite.animation_timer >= 0.12:
@@ -344,6 +354,7 @@ class MovementEngine():
             sprite.texture = sprite.textures[sprite.current_texture]
 
     def kill_all_enemys(self):
+        """Force-kill every enemy regardless of list membership."""
         for enemy in list(self.following_Enemy_sprite_list):
             self.enemy_death(enemy)
         for enemy in list(self.path_Enemy_sprite_list):
@@ -353,6 +364,7 @@ class MovementEngine():
 
 
     def all_collision_checks(self, player):
+        """Process bullet-vs-enemy, player-vs-scrap, and enemy-vs-player collisions."""
         # BULLET ENEMY COLLISION
         for bullet in list(self.bullet_sprite_list):
             collides_path = arcade.check_for_collision_with_list(bullet, self.path_Enemy_sprite_list)
@@ -391,11 +403,13 @@ class MovementEngine():
                 return True
         
     def get_all_enemy_lists(self):
+        """Expose all enemy sprite lists for UI/debug rendering."""
         return self.path_Enemy_sprite_list, self.following_Enemy_sprite_list, self.retourning_list
     
             
 
     def enemy_death(self, enemy):
+        """Handle enemy death: spawn scrap and remove enemy sprite."""
         for i in range(3):
             scrap = arcade.Sprite(asset_path("assets/sprites/scrap.png"))
             scrap.center_x = enemy.center_x + random.randint(0, 20)
@@ -405,6 +419,7 @@ class MovementEngine():
         enemy.kill()
 
     def player_shoot(self, x, y):
+        """Spawn and launch a bullet if weapon fire-rate cooldown allows it."""
         current_time = time.monotonic()
         self.currentWeapon = self.Daten.get_one_data("CurrentWeapon")
         if (current_time - self.last_shoot_time) >= self.Daten.get_one_weapon_data(self.currentWeapon, "speed"):

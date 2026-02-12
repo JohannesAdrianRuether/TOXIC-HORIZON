@@ -4,8 +4,10 @@ import tkinter as tk
 from path_utils import asset_path
 
 class DatenManagement:
+    """Central state container for save/load, player stats, and weapon metadata."""
 
     def __init__(self):
+        """Initialize UI root, autosave path, and seed default game data."""
         self.autosave_path = "autosave.json"
         self._root = tk.Tk() # Keep one instance
         self._root.withdraw() 
@@ -16,6 +18,7 @@ class DatenManagement:
     # NEUES SPIEL – Daten neu erzeugen
     # ---------------------------------------------------------
     def setup(self):
+        """Create the default runtime data model and static weapon table."""
         self.data = {
             "Username": "",
             "Health": 100,
@@ -61,6 +64,7 @@ class DatenManagement:
     # AUTOSAVE – speichert still im Hintergrund
     # ---------------------------------------------------------
     def autosave(self):
+        """Persist current in-memory game state to autosave.json."""
         with open(self.autosave_path, "w", encoding="utf-8") as file:
             json.dump(self.data, file, indent=4)
 
@@ -68,6 +72,7 @@ class DatenManagement:
     # MANUELLES SPEICHERN (mit Dialog)
     # ---------------------------------------------------------
     def speichern(self):
+        """Open a save dialog and write current state to selected JSON file."""
         self._root.update()
 
         filepath = filedialog.asksaveasfilename(
@@ -90,6 +95,7 @@ class DatenManagement:
     # LADEN
     # ---------------------------------------------------------
     def laden(self):
+        """Open a load dialog and replace current state from selected JSON file."""
         self._root.update()
 
         filepath = filedialog.askopenfilename(
@@ -114,29 +120,36 @@ class DatenManagement:
     # ---------------------------------------------------------
 
     def change_data(self, attribute : str, change : int):
+        """Increment a numeric attribute by delta."""
         self.data[attribute] += change
         return
         
 
     def set_data(self, attribute: str, change : int):
+        """Set an attribute to an explicit value."""
         self.data[attribute] = change
 
     # ---------------------------------------------------------
 
     def get_alldata(self):
+        """Return full data dictionary."""
         return self.data
     
     def get_one_data(self, attribute):
+        """Return a single value from runtime data dictionary."""
         return self.data[attribute]
     
     def get_all_weapon_data(self, Weapon):
+        """Return complete metadata dictionary for a weapon id."""
         return self.weapons[Weapon]
     
     def get_one_weapon_data(self, Weapon, Attribute):
+        """Return one specific weapon attribute by key."""
         return self.weapons[Weapon][Attribute]
 
     
     def upgrade_weapon(self):
+        """Advance weapon tier and subtract corresponding scrap cost."""
         CurrentWeapon = str(self.data["CurrentWeapon"])
         CurrentLevel = int(CurrentWeapon[-1])
         if CurrentLevel < 3:
@@ -149,9 +162,11 @@ class DatenManagement:
         self.autosave()
 
     def get_previous_commands(self):
+        """Return console command history list."""
         return self.data["PreviousCommands"]
     
     def append_to_previous_commands(self, newCommand: str):
+        """Append command history entry and enforce capped history length."""
         if not newCommand.strip():
             return
 

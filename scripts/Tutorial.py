@@ -6,7 +6,9 @@ from path_utils import asset_path
 Daten = Data.DatenManagement()
 
 class Tutorial(arcade.View):
+    """Guided tutorial view with phased dialog + unlocked mechanics over time."""
     def __init__(self):
+        """Build tutorial scene, player setup, UI, and scripted dialog phases."""
         super().__init__()
         Daten.autosave()
         Daten.set_data("Username", "Überlebender")
@@ -109,6 +111,7 @@ class Tutorial(arcade.View):
 
 
     def on_draw(self):
+        """Render world, tutorial dialog UI, and optional combat overlays."""
         self.clear()
         self.camera.use()
         self.scene.draw()
@@ -150,6 +153,7 @@ class Tutorial(arcade.View):
             arcade.schedule(lambda dt: self.window.show_view(GameOver()), 0)
 
     def on_update(self, delta_time):
+        """Advance tutorial simulation and unlock mechanics by phase thresholds."""
         self.GameUIEngine.run_cycle()
         self.GameUIEngine.Game_update_UI()
         if self.phase >= 8:
@@ -168,6 +172,7 @@ class Tutorial(arcade.View):
         
 
     def update_player_animation(self, delta_time):
+        """Animate player walk cycle in tutorial based on movement state."""
         # Bewegung prüfen
         moving = (
             arcade.key.W in self.keys_down or
@@ -205,6 +210,7 @@ class Tutorial(arcade.View):
             
 
     def on_key_press(self, symbol, modifiers):
+        """Handle controls: movement, dash, interaction, tutorial phase advance."""
         self.keys_down.add(symbol)
         dx, dy, possible = self.GameMovementEngine.dash_is_possible(symbol, self.keys_down, self.dash_cooldown)
         if dx != 0 or dy != 0: self.dash_x, self.dash_y = dx, dy
@@ -227,9 +233,11 @@ class Tutorial(arcade.View):
 
 
     def on_key_release(self, symbol, modifiers):
+        """Remove released key from active input set."""
         if symbol in self.keys_down: self.keys_down.remove(symbol)
 
     def on_mouse_press(self, x, y, button, modifiers):
+        """Forward left-click shooting to movement engine."""
         if button == arcade.MOUSE_BUTTON_LEFT:
             p = self.camera.unproject((x, y))
             self.GameMovementEngine.player_shoot(p.x, p.y)
