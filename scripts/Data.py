@@ -26,7 +26,8 @@ class DatenManagement:
             "CurrentWeapon": "1.1",
             "MusicVolume" : 1,
             "SoundVolume" : 1,
-            "PreviousCommands" : []
+            "PreviousCommands" : [],
+            "Maplist" : ["maps/Map1.tmx", "maps/MapNele.tmx"]
         }
 
         self.weapons = {
