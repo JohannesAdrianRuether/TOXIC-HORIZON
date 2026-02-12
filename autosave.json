@@ -1,5 +1,5 @@
 {
-    "Username": "j",
+    "Username": "",
     "Health": 100,
     "Ultpoints": 0,
     "Schrott": 0,
@@ -9,5 +9,9 @@
     "CurrentWeapon": "1.1",
     "MusicVolume": 1,
     "SoundVolume": 1,
-    "PreviousCommands": []
+    "PreviousCommands": [],
+    "Maplist": [
+        "maps/Map1.tmx",
+        "maps/MapNele.tmx"
+    ]
 }

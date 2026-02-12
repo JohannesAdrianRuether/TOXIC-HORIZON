@@ -7,6 +7,7 @@ from MovementEngine import *
 from UIEngine import *
 import Tutorial
 import Data
+from LoadingScreen import *
 
 
 monitor = arcade.get_display_size()
@@ -123,72 +124,10 @@ class NewGameView(arcade.View):
             arcade.schedule(lambda dt: self.window.show_view(LobbyView()), 0)
 
 class GameView(arcade.View):
-    def __init__(self):
+    def __init__(self, GameDict):
         super().__init__()
-        self.Daten = Data.DatenManagement()
-        self.Daten.autosave()
-        self.map_list = ["maps/Map1.tmx", "maps/MapNele.tmx"]
-        self.setup()
-
-
-    def setup(self):
-        map_pfad = random.choice(self.map_list)
-        self.window.set_mouse_visible(False)
-        self.crosshair = arcade.Sprite("sprites/crosshair.png")
-        self.sound_music = arcade.Sound("sounds/gamemusic.mp3")
-        #arcade.play_sound(self.sound_music, loop=True, volume=int(Daten.get_one_data("MusicVolume")))
-
-        self.tilemap = arcade.load_tilemap(map_pfad, scaling=2, layer_options={"Walls": {"use_spatial_hash": True}})
-
-        
-        self.scene = arcade.Scene.from_tilemap(self.tilemap)
-        self.Player_sprite = arcade.Sprite()
-        self.Player_sprite.scale = 0.5
-
-        self.player_walk_right = [
-            arcade.load_texture("sprites/player/walk_right_1.png"),
-            arcade.load_texture("sprites/player/walk_right_2.png"),
-            arcade.load_texture("sprites/player/walk_right_3.png"),
-        ]
-
-        self.player_walk_left = [
-            arcade.load_texture("sprites/player/walk_left_1.png"),
-            arcade.load_texture("sprites/player/walk_left_2.png"),
-            arcade.load_texture("sprites/player/walk_left_3.png"),
-        ]
-
-        self.player_anim_timer = 0
-        self.player_anim_index = 0
-        self.player_facing = "right"
-
-        # Starttexture
-        self.Player_sprite.texture = self.player_walk_right[0]
-
-   
-        for spawn in self.scene["spawns"]:
-            if spawn.properties.get("spawn") == "player":
-                self.Player_sprite.center_x, self.Player_sprite.center_y = spawn.center_x, spawn.center_y
-
-        self.camera = arcade.Camera2D()
-        self.gui_camera = arcade.Camera2D()
-        self.GameMovementEngine = MovementEngine(self.scene, self.camera, self.window, self.Daten)
-        self.GameUIEngine = UIEngine(self.window, self.Daten)
-        self.GameMovementEngine.spawn_enemys()
-        self.playerisdead = False
-        
-
-        self.dash_x, self.dash_y = 0, 0
-        self.dash_decay, self.dash_cooldown = 1.2, 1.5
-        self.keys_down = set()
-        self.text_username = arcade.Text(self.Daten.get_one_data("Username"), 0, 0, arcade.color.WHITE, 15, anchor_x="center")
-
-        self.interactiontiles = self.scene["interactions"]
-        self.button_e_sprite = arcade.Sprite("sprites/EButton.png")
-        self.Daten.set_data("Health", 100)
-        self.GameUIEngine.minimap_setup()
-
-        self.show_console = False
-        self.consoletext = ''
+        self.__dict__.update(GameDict)
+      
 
 
     def on_draw(self):
@@ -372,6 +311,11 @@ class LobbyView(arcade.View):
         self.show_console = False
         self.consoletext = ''
 
+        loader = LoadingScreen()
+        loader = loader.load_GameView()
+        self.GameDict = loader.__dict__
+
+
     def on_show_view(self):
         self.Daten.autosave()
 
@@ -464,7 +408,7 @@ class LobbyView(arcade.View):
                     self.shop_is_entered = True
                 elif itype == "startgame" and symbol == arcade.key.E:
                     arcade.schedule(lambda dt: self.Daten.change_data("Levelnumber", 1), 0)
-                    arcade.schedule(lambda dt: self.window.show_view(GameView()), 0)
+                    arcade.schedule(lambda dt: self.window.show_view(GameView(self.GameDict)), 0)
 
         if symbol == arcade.key.ESCAPE and self.shop_is_entered == False:
             arcade.schedule(lambda dt: self.window.show_view(MenuView(currently_in_game = True)), 0)
